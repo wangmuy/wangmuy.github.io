@@ -113,6 +113,7 @@ task :new_post, :title do |t, args|
     post.puts "categories: "
     post.puts "keywords: "
     post.puts "description: "
+    post.puts "#published: false"
     post.puts "---"
   end
 end
@@ -151,6 +152,7 @@ task :new_page, :filename do |t, args|
       page.puts "comments: true"
       page.puts "sharing: true"
       page.puts "footer: true"
+      page.puts "#published: false"
       page.puts "---"
     end
   else
