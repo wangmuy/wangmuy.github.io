@@ -111,6 +111,8 @@ task :new_post, :title do |t, args|
     post.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M')}"
     post.puts "comments: true"
     post.puts "categories: "
+    post.puts "keywords: "
+    post.puts "description: "
     post.puts "---"
   end
 end
@@ -144,6 +146,8 @@ task :new_page, :filename do |t, args|
       page.puts "layout: page"
       page.puts "title: \"#{title}\""
       page.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M')}"
+      page.puts "keywords: "
+      page.puts "description: "
       page.puts "comments: true"
       page.puts "sharing: true"
       page.puts "footer: true"
