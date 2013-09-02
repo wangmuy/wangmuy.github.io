@@ -243,7 +243,7 @@ rake generate
 
 i18n
 ===============================================================================
-I forked from [hendricius/jekyll-i18n](https://github.com/hendricius/jekyll-i18n.git) and adapted to octopress(in branch [octopress-i18n](http://github.com/wangmuy/octopress-i18n.git)).
+I forked from [hendricius/jekyll-i18n](https://github.com/hendricius/jekyll-i18n.git) and adapted to octopress(in [octopress-i18n](http://github.com/wangmuy/octopress-i18n)).
 
 However, AFAIK there's no i18n capable themes right now. You have to create your own theme branch and adapt to i18n.
 
