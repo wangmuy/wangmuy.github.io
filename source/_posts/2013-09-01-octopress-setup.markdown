@@ -4,7 +4,7 @@ title: "用Octopress在GitHub上搭建博客"
 date: 2013-09-01 13:23
 comments: true
 categories: [octopress]
-keywords: octopress, octopress配置
+keywords: octopress, setup, 配置, 博客
 description: octopress配置
 #published: false
 ---
@@ -17,8 +17,18 @@ description: octopress配置
 * (**假定注册名为 yourname, 注册邮箱 yourname@gmail.com**, 下同)
 * 创建空仓库 yourname.github.io
 
-下载并配置 [MsysGit](http://code.google.com/p/msysgit/downloads/list)
+下载并配置 [Git](http://git-scm.com/)
 -------------------------------------------------------------------------------
+
+### 下载
+* Linux
+  * 使用系统包管理安装git
+
+* Windows
+  * [MsysGit](http://code.google.com/p/msysgit/downloads/list)
+  * vim着色：MsysGit上的vim着色文件不全, 可从完整vim73的syntax目录拷过来, 如 `/usr/share/vim/vim73/syntax`
+
+### 配置
 设置 LANG 环境变量(可以不设LC_ALL; 可以不是zh_CN, 后缀是UTF-8即可;)
 
 ```bash
@@ -38,9 +48,11 @@ git config --global user.email "yourname@gmail.com"
 git config core.autocrlf false
 git config credential.helper 'cache --timeout=3600' # Keep your password cached in memory
 git config github.user "yourname"
+# ssh key
+ssh-keygen -t rsa -C "yourname@gmail.com"
+cat ~/.ssh/id_rsa.pub # 将内容复制到 https://github.com/settings/ssh 上
 ```
 
-vim着色：MsysGit上的vim着色文件不全, 可从完整vim73的syntax目录拷过来, 如 `/usr/share/vim/vim73/syntax`
 <!--more-->
 
 下载并配置 Ruby(1.9.3)
@@ -49,20 +61,30 @@ vim着色：MsysGit上的vim着色文件不全, 可从完整vim73的syntax目录
 ### 下载
 * [Windows](http://rubyinstaller.org/downloads)
   * 7zip包解压(假设到 D:\ruby1.9.3), 添加到系统PATH
-  * 下载并配置 DevKit
+  * 下载并配置 DevKit([wiki](http://github.com/oneclick/rubyinstaller/wiki/Development-Kit))
     * 1.9.3 配对 [DevKit-tdm](http://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe), 解压(假设到 D:\ruby1.9.3-DevKit), 添加到系统PATH
+
+```bash
+cd /D/ruby1.9.3-DevKit
+ruby dk.rb init
+ruby dk.rb review # 确认ruby位置正确
+ruby dk.rb install
+# 验证DevKit
+gem install json --platform=ruby # 能看到 build native
+ruby -rubygems -e "require 'json'; puts JSON.load('[42]').inspect" # 确认json gem安装成功
+```
 
 * Linux
   * 使用 [RVM(Ruby版本管理)](http://rvm.io/rvm/install)
 
 ```bash
-	# install RVM stable with ruby in user's $HOME
-	\curl -L http://get.rvm.io | bash -s stable --ruby # 反斜杠是防止使用到 ~/.curlrc 定义的 alias
-	# rvm安装完毕
-	# rvm list known
-	rvm install 1.9.3
-	rvm use 1.9.3 --default
-	# ruby -v
+# install RVM stable with ruby in user's $HOME
+\curl -L http://get.rvm.io | bash -s stable --ruby # 反斜杠是防止使用到 ~/.curlrc 定义的 alias
+# rvm安装完毕
+# rvm list known
+rvm install 1.9.3
+rvm use 1.9.3 --default
+# ruby -v
 ```
 
 ### 配置
@@ -97,7 +119,7 @@ rake setup_github_pages
 
 ```bash
 # rake new_post['hello octopress'] # 创建新markdown博文
-rake generate
+rake generate # 确保 `.gitignore` 包含忽略 _deploy 目录
 # rake preview # 可通过本机4000端口预览
 # rake deploy # push 到 GitHub 博客项目的 master 分支
 ```
@@ -125,7 +147,8 @@ description: yourname的技术博客
 
 ### 侧栏
 * about me
-`touch source/_includes/custom/asides/about.html`, 添加内容
+  * `_config.yml` 的 `default_asides` 里添加 `custom/asides/about.html`
+  * `touch source/_includes/custom/asides/about.html`, 添加内容
 {% raw %}
 ```html
 <section>
@@ -214,17 +237,18 @@ duoshuo_short_name: yourname
 
 ```bash
 git clone http://github.com/bkutil/bootstrap-theme.git .themes/bootstrap-theme
-rake install['bootstrap-theme']
-rake generate # 注意: 换主题后所有非custom目录下的内容都会被覆盖掉！！
+rake install['bootstrap-theme'] # 注意: 换主题后所有非custom目录下的内容都会被覆盖掉！！
+rake generate
 ```
 
 i18n
 ===============================================================================
-TODO
+I forked from [hendricius/jekyll-i18n](https://github.com/hendricius/jekyll-i18n.git) and adapted to octopress(in branch [octopress-i18n](http://github.com/wangmuy/jekyll-i18n/tree/octopress-i18n)).
 
+However, AFAIK there's no i18n capable themes right now. You have to create your own theme branch and adapt to i18n.
 
 _______________________________________________________________________________
-[^1]: http://netwjx.github.io/blog/2012/03/18/octopress-note/
-[^2]: http://www.yanjiuyanjiu.com/blog/20130402/
-[^3]: http://sinosmond.github.io/blog/2012/03/12/install-and-deploy-octopress-to-github-on-windows7-from-scratch/
-[^4]: http://ihavanna.org/internet/2013-02/add-duoshuo-commemt-system-into-octopress.html
+[^1]: [Octopress 笔记](http://netwjx.github.io/blog/2012/03/18/octopress-note/)
+[^2]: [我的Octopress配置](http://www.yanjiuyanjiu.com/blog/20130402/)
+[^3]: [在 Windows7 下从头开始安装部署 Octopress](http://sinosmond.github.io/blog/2012/03/12/install-and-deploy-octopress-to-github-on-windows7-from-scratch/)
+[^4]: [为 Octopress 添加多说评论系统](http://ihavanna.org/internet/2013-02/add-duoshuo-commemt-system-into-octopress.html)
