@@ -231,6 +231,12 @@ duoshuo_short_name: yourname
 
 创建 `source/_includes/post/duoshuo-thread.html`, 将从多说获得的代码放入其中
 
+统计功能
+-------------------------------------------------------------------------------
+
+### [站长统计](http://www.cnzz.com)
+`source/_includes/custom/footer.html` 中加入注册后给出的统计代码.
+
 换主题
 ===============================================================================
 [bootstrap-theme](http://github.com/bkutil/bootstrap-theme) , 或者[其他的](http://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes)
