@@ -1,6 +1,8 @@
 @import "compass";
 @include global-reset;
 
+@import "bootstrap/bootstrap";
+@import "bootstrap/responsive";
 @import "custom/colors";
 @import "custom/fonts";
 @import "custom/layout";
