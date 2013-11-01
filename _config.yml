@@ -6,7 +6,7 @@ url: http://wangmuy.github.io
 title: wangmuy的技术博客
 subtitle: android及其他
 author: wangmuy
-simple_search: http://google.com/search
+simple_search: http://google.com.hk/search
 description: wangmuy的技术博客
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
@@ -34,6 +34,8 @@ plugins: plugins
 code_dir: downloads/code
 category_dir: blog/categories
 markdown: kramdown
+kramdown:
+  toc_levels: 1..3
 rdiscount:
   extensions:
     - autolink
@@ -50,7 +52,7 @@ titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [custom/asides/about.html, asides/recent_posts.html, asides/github.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+default_asides: [custom/asides/about.html, asides/category_list.html, asides/recent_posts.html, asides/github.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.

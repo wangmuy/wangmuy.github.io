@@ -1,2 +1,18 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+#markdown-toc:before {
+  content: "TOC";
+  font-weight: bold;
+}
+
+ul#markdown-toc {
+  list-style: none;
+//  float: left;
+  background-color: LightGray;
+  margin-right:2em;
+  border-radius: 1em;
+  box-shadow: 0px 1px 4px;
+  -moz-box-sizing: border-box;
+  padding: 10px 10px 10px 20px;
+}
+

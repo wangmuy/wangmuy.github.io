@@ -9,15 +9,19 @@ description: octopress配置
 #published: false
 ---
 
+* 目录
+{:toc}
+<!--more-->
+
 备料
 ===============================================================================
 
-注册 [GitHub](http://github.com) 账户并创建一个空仓库
+注册 GitHub 账户并创建一个空仓库
 -------------------------------------------------------------------------------
 * (**假定注册名为 yourname, 注册邮箱 yourname@gmail.com**, 下同)
 * 创建空仓库 yourname.github.io
 
-下载并配置 [Git](http://git-scm.com/)
+下载并配置 Git
 -------------------------------------------------------------------------------
 
 ### 下载
@@ -52,8 +56,6 @@ git config github.user "yourname"
 ssh-keygen -t rsa -C "yourname@gmail.com"
 cat ~/.ssh/id_rsa.pub # 将内容复制到 https://github.com/settings/ssh 上
 ```
-
-<!--more-->
 
 下载并配置 Ruby(1.9.3)
 -------------------------------------------------------------------------------
@@ -129,8 +131,8 @@ rake generate # 确保 `.gitignore` 包含忽略 _deploy 目录
 
 使用
 -------------------------------------------------------------------------------
-* `rake new_post['new-post-today']` 生成新博文
-* `rake new_page['new-page-in-here']` 生成新页面(不属于博文系列)
+### `rake new_post['new-post-today']` 生成新博文
+### `rake new_page['new-page-in-here']` 生成新页面(不属于博文系列)
 
 配置[^2]
 -------------------------------------------------------------------------------
@@ -145,10 +147,46 @@ markdown: kramdown
 description: yourname的技术博客
 ```
 
+### 自动生成目录[^6]
+
+#### 使用kramdown(下面配置), 写博客时加入以下两行即可自动生成目录:
+{% raw %}
+```
+* list element with functor item
+{:toc}
+```
+{% endraw %}
+
+#### 目录样式
+`touch sass/custom/_styles.scss`, 添加
+
+{% raw %}
+```css
+#markdown-toc:before {
+  content: "TOC";
+  font-weight: bold;
+}
+
+ul#markdown-toc {
+  list-style: none;
+//  float: left;
+  background-color: LightGray;
+  margin-right:2em;
+  border-radius: 1em;
+  box-shadow: 0px 1px 4px;
+  -moz-box-sizing: border-box;
+  padding: 10px 10px 10px 20px;
+}
+```
+{% endraw %}
+
 ### 侧栏
-* about me
-  * `_config.yml` 的 `default_asides` 里添加 `custom/asides/about.html`
-  * `touch source/_includes/custom/asides/about.html`, 添加内容
+
+#### about me
+
+##### `_config.yml` 的 `default_asides` 里添加 `custom/asides/about.html`
+
+##### `touch source/_includes/custom/asides/about.html`, 添加内容
 {% raw %}
 ```html
 <section>
@@ -160,6 +198,53 @@ description: yourname的技术博客
 </section>
 ```
 {% endraw %}
+
+#### 分类标签(支持中文)/categories[^5]
+
+##### 中文支持: 确认 `plugins/category_generator.rb` 中 `write_category_indexes` 和 `category_link` 函数包含 `to_url` 调用 (url 不区分大小写, 不用再调 downcase)
+
+```ruby
+# 109行附近
+self.write_category_index(File.join(dir, category.to_url), category)
+
+# 176行附近
+"<a class='category' href='/#{dir}/#{category.to_url}/'>#{category}</a>"
+```
+
+##### `touch plugins/category_list_tag.rb`, 添加内容
+{% raw %}
+```ruby
+module Jekyll
+  class CategoryListTag < Liquid::Tag
+    def render(context)
+      html = ""
+      categories = context.registers[:site].categories.keys
+      categories.sort.each do |category|
+        posts_in_category = context.registers[:site].categories[category].size
+        html << "<li class='category'><a href='/blog/categories/#{category.to_url}/'>#{category} (#{posts_in_category})</a></li>\n"
+      end
+      html
+    end
+  end
+end
+
+Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
+```
+{% endraw %}
+
+##### `touch source/_includes/asides/category_list.html`, 添加内容
+{% raw %}
+```html
+<section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    {% category_list %}
+  </ul>
+</section>
+```
+{% endraw %}
+
+##### `_config.yml` 中 `default_asides` 添加 `asides/category_list.html`
 
 ### Header
 * about页面
@@ -249,12 +334,22 @@ rake generate
 
 i18n
 ===============================================================================
-I forked from [hendricius/jekyll-i18n](https://github.com/hendricius/jekyll-i18n.git) and adapted to octopress(in [octopress-i18n](http://github.com/wangmuy/octopress-i18n)).
+I forked from [hendricius/jekyll-i18n](http://github.com/hendricius/jekyll-i18n.git) and adapted to octopress(in [octopress-i18n](http://github.com/wangmuy/octopress-i18n)).
 
 However, AFAIK there's no i18n capable themes right now. You have to create your own theme branch and adapt to i18n.
+
+html中写
+{% raw %}
+```yaml
+{% i18nvar %}
+```
+{% endraw %}
+, `source/_locales/zh_CN.yml` 中定义对应变量 `i18nvar: 中文名称`
 
 _______________________________________________________________________________
 [^1]: [Octopress 笔记](http://netwjx.github.io/blog/2012/03/18/octopress-note/)
 [^2]: [我的Octopress配置](http://www.yanjiuyanjiu.com/blog/20130402/)
 [^3]: [在 Windows7 下从头开始安装部署 Octopress](http://sinosmond.github.io/blog/2012/03/12/install-and-deploy-octopress-to-github-on-windows7-from-scratch/)
 [^4]: [为 Octopress 添加多说评论系统](http://ihavanna.org/internet/2013-02/add-duoshuo-commemt-system-into-octopress.html)
+[^5]: [讓Octopress有中文分類及側邊列](http://selfecy.com/blog/2013/07/13/rang-octopressyou-zhong-wen-fen-lei-ji-ce-bian-lie/)
+[^6]: [Table of Contents in Octopress](http://blog.riemann.cc/2013/04/10/table-of-contents-in-octopress/)
