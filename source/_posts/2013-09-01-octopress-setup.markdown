@@ -260,9 +260,9 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
   * [URI.min.js](http://github.com/medialize/URI.js/raw/gh-pages/src/URI.min.js)
 * `gem install nokogiri json` 安装依赖, `gem list` 查看 nokogiri 版本(假设为 `1.6.0`)
 * 修改 `Gemfile`, 标明依赖 `gem 'nokogiri', '~> 1.6.0'`
-* `rake new_page['search']`, 修改 search页(`source/search/index.markdown`):
+* `rake new_page['search']`, 编辑 search页(`source/search/index.markdown`):
 
-{% gist 7365623 %}
+{% gist 7367525 %}
 
 * 屏蔽页面被索引有两种方式
   * 每个 markdown页 的 YAML配置头 加 `exclude_from_search: true`
@@ -376,6 +376,16 @@ html中写
 ```
 {% endraw %}
 , `source/_locales/zh_CN.yml` 中定义对应变量 `i18nvar: 中文名称`
+
+
+更新
+===============================================================================
+```bash
+git pull octopress master # 自动或手动merge
+bundle install
+rake update_source
+rake update_style
+```
 
 _______________________________________________________________________________
 [^1]: [Octopress 笔记](http://netwjx.github.io/blog/2012/03/18/octopress-note/)

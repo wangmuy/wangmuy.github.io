@@ -33,7 +33,12 @@ header.page-header {
   border-bottom: 5px solid rgba(25, 125, 25, 0.8);
 }
 
-hr {
+div.entry-content hr {
   border-width: 5px 0px;
   border-color: rgba(25, 125, 25, 0.8) -moz-use-text-color rgb(255, 255, 255)
+}
+
+hr {
+  border-width: 1px 0px;
+  border-color: rgb(200, 200, 200)
 }
