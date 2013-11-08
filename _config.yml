@@ -109,3 +109,7 @@ jiathis: true
 # DuoShuo Comments
 duoshuo_comments: true
 duoshuo_short_name: wangmuy
+
+# Lunr
+lunr_search:
+  excludes: [/about/index.html, /blog/archives/index.html, /index.html, /atom.xml, /robots.txt]

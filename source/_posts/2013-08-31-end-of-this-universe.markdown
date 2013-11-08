@@ -7,5 +7,6 @@ categories:
 keywords:
 description:
 #published: true
+exclude_from_search: true
 ---
 直到世界的尽头

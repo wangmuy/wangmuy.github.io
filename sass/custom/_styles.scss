@@ -7,6 +7,7 @@
 
 ul#markdown-toc {
   list-style: none;
+  display: inline-block;
 //  float: left;
   background-color: LightGray;
   margin-right:2em;
@@ -16,3 +17,23 @@ ul#markdown-toc {
   padding: 10px 10px 10px 20px;
 }
 
+div.span9 {
+  background-color: rgb(255,255,255);
+}
+
+p.meta {
+  margin: 0px 0px;
+}
+
+h1.entry-title {
+  margin-bottom: 0px;
+}
+
+header.page-header {
+  border-bottom: 5px solid rgba(25, 125, 25, 0.8);
+}
+
+hr {
+  border-width: 5px 0px;
+  border-color: rgba(25, 125, 25, 0.8) -moz-use-text-color rgb(255, 255, 255)
+}

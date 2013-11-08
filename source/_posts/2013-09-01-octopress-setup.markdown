@@ -7,6 +7,7 @@ categories: [octopress]
 keywords: octopress, setup, 配置, 博客
 description: octopress配置
 #published: false
+#exclude_from_search: false
 ---
 
 * 目录
@@ -169,6 +170,7 @@ description: yourname的技术博客
 
 ul#markdown-toc {
   list-style: none;
+  display: inline-block;
 //  float: left;
   background-color: LightGray;
   margin-right:2em;
@@ -245,6 +247,35 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
 {% endraw %}
 
 ##### `_config.yml` 中 `default_asides` 添加 `asides/category_list.html`
+
+
+### Jekyll+lunr.js 即时搜索[^7]
+* 下载 [jekyll_lunr_js_search.rb](http://github.com/slashdotdash/jekyll-lunr-js-search/raw/master/build/jekyll_lunr_js_search.rb) 放到 `plugins` 目录. 可按 [^8] 中提示修改一个小bug.
+* 下载 [jquery.lunr.search.js](http://github.com/slashdotdash/jekyll-lunr-js-search/raw/master/js/jquery.lunr.search.js) 放到 `source/javascripts` 目录
+* jQuery 已在 Octopress 中内置: `source/javascripts/libs/jquery.min.js`
+* 下载 以下几个 javascript 依赖, 放到 `source/javascripts` 目录
+  * [lunr.min.js](http://raw.github.com/olivernn/lunr.js/master/lunr.min.js)
+  * [mustache.js](http://github.com/janl/mustache.js/raw/master/mustache.js)
+  * [date.format.js](http://stevenlevithan.com/assets/misc/date.format.js)
+  * [URI.min.js](http://github.com/medialize/URI.js/raw/gh-pages/src/URI.min.js)
+* `gem install nokogiri json` 安装依赖, `gem list` 查看 nokogiri 版本(假设为 `1.6.0`)
+* 修改 `Gemfile`, 标明依赖 `gem 'nokogiri', '~> 1.6.0'`
+* `rake new_page['search']`, 修改 search页(`source/search/index.markdown`):
+
+{% gist 7365623 %}
+
+* 屏蔽页面被索引有两种方式
+  * 每个 markdown页 的 YAML配置头 加 `exclude_from_search: true`
+  * `_config.yml` 统一添加(即使没有也添加, 防止索引运行出错)
+
+```yaml
+lunr_search:
+  excludes: [rss.xml, atom.xml]
+```
+
+* 首页添加链接到 search页面
+* 重新 `rake generate`
+
 
 ### Header
 * about页面
@@ -353,3 +384,5 @@ _______________________________________________________________________________
 [^4]: [为 Octopress 添加多说评论系统](http://ihavanna.org/internet/2013-02/add-duoshuo-commemt-system-into-octopress.html)
 [^5]: [讓Octopress有中文分類及側邊列](http://selfecy.com/blog/2013/07/13/rang-octopressyou-zhong-wen-fen-lei-ji-ce-bian-lie/)
 [^6]: [Table of Contents in Octopress](http://blog.riemann.cc/2013/04/10/table-of-contents-in-octopress/)
+[^7]: [Jekyll+lunr.js](http://github.com/slashdotdash/jekyll-lunr-js-search)
+[^8]: [使用Jekyll-Bootstrap搭建博客时出现的问题](http://blog.hydra1983.com/my%20tech/2013/05/05/create-a-blog-using-jekyll-bootstrap/)
