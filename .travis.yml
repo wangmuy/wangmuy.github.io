@@ -1,5 +1,18 @@
+branches:
+  only:
+  - source
 language: ruby
 rvm:
-  - 2.0.0
   - 1.9.3
-script: bundle exec rake install; bundle exec rake generate
+before_script:
+  - export REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
+  - gem install kramdown
+  - rake setup_github_pages[$REPO_URL]
+script:
+  - rake generate
+after_script:
+  - rake deploy
+env:
+  global:
+  - GH_REPO="wangmuy/wangmuy.github.io"
+  - secure: "AtKy97QRu8F+8bDpQEEoK2E5/vemSOWdfWT4WPw3coX8lcBM7tqdkUlvJFHwNcULBWTO9ez4Q7q1AKBHkrySkKCaj27xcxx/4e5BaMN3giWVthsz9bhBCe+HuSK50x1mpfaPLV+jjquuqHLouNS1GF/jIRdpWHoYkSjSO8mfb+E="

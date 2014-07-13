@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wangmuy/wangmuy.github.io.png)](https://travis-ci.org/wangmuy/wangmuy.github.io)
+
 ## What is Octopress?
 
 Octopress is [Jekyll](https://github.com/mojombo/jekyll) blogging at its finest.
