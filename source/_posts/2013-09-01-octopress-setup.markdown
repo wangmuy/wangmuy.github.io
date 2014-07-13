@@ -391,7 +391,7 @@ rake update_style
 ===============================================================================
 * 登录[Travis-CI](https://travis-ci.org), 注册授权,  右上角 Accounts, 对应项目repo 置为 ON
 * 生成 https 访问 github 所需的 token. 可用[^9]中的界面方法, 或[^10]中的curl直接获取
-* `gem install travis; travis encrypt GH_TOKEN=<token>`
+* `gem install travis; travis encrypt GH_TOKEN=<token>` 生成加密的token
 * 修改 .travis.yml, 几点注意:
   * 调用 rake 命令时前面要加 `bundle exec `, 防止 rake 命令版本冲突
   * Travis 默认使用 `Gemfile.lock` 中的信息, 但此文件中包含平台相关的build信息, 会导致nokogiri编译问题[^11]. 所以最好是将 `Gemfile` 拷贝出一份独立的 `Gemfile.travis` 供 Travis 使用.
@@ -419,7 +419,7 @@ after_script:
 env:
   global:
   - GH_REPO="your_github_name/your_github_name.github.io"
-  - secure: "<your-travis-encrypted-secret>"
+  - secure: "<your-travis-encrypted-token>"
 ```
 
 * 修改 Rakefile
