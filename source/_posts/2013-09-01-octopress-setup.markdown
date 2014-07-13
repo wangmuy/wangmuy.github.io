@@ -387,6 +387,79 @@ rake update_source
 rake update_style
 ```
 
+使用 travis-ci 自动编译发布
+===============================================================================
+* 登录[Travis-CI](https://travis-ci.org), 注册授权,  右上角 Accounts, 对应项目repo 置为 ON
+* 生成 https 访问 github 所需的 token. 可用[^9]中的界面方法, 或[^10]中的curl直接获取
+* `gem install travis; travis encrypt GH_TOKEN=<token>`
+* 修改 .travis.yml, 几点注意:
+  * 调用 rake 命令时前面要加 `bundle exec `, 防止 rake 命令版本冲突
+  * Travis 默认使用 `Gemfile.lock` 中的信息, 但此文件中包含平台相关的build信息, 会导致nokogiri编译问题[^11]. 所以最好是将 `Gemfile` 拷贝出一份独立的 `Gemfile.travis` 供 Travis 使用.
+  * `Gemfile.travis` 中的 `source` 此时也可改用通用的 [rubygems](https://rubygems.org)
+  * Travis上构建时如果出现 `Liquid Exception: Gist replied with 301` 错误提示, 是Octopress的一个bug, 则需要更新一下Octopress[^12]
+
+```yaml
+branches:
+  only:
+  - source
+language: ruby
+rvm:
+  - 1.9.3
+gemfile:
+  - Gemfile.travis
+before_script:
+  - git config --global user.name "yourname"
+  - git config --global user.email "yourname@gmail.com"
+  - export REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
+  - bundle exec rake setup_github_pages[$REPO_URL]
+script:
+  - bundle exec rake generate
+after_script:
+  - bundle exec rake deploy
+env:
+  global:
+  - GH_REPO="your_github_name/your_github_name.github.io"
+  - secure: "<your-travis-encrypted-secret>"
+```
+
+* 修改 Rakefile
+
+隐藏token
+
+```diff
+-      puts "Added remote #{repo_url} as origin"
++      puts "Added remote as origin" # don't put repo_url in travis-ci as it may contains token
+
+-    system "git push origin #{deploy_branch} --force"
++    system "git push origin #{deploy_branch} --force --quiet" # hide github token
+```
+
+支持https提交
+
+```diff
+-    puts "(For example, 'git@github.com:yourname/yourname.github.com)"
++    puts "(For example, 'git@github.com:yourname/yourname.github.com' or 'https://github.com/yourname/yourname.github.com')"
+
+-  user = repo_url.match(/:([^\/]+)/)[1]
++  user = repo_url.match(/[\/:]([^\/]+)\/[^\/]+$/)[1]
+```
+
+跳过不需要触发travis的commit
+
+```diff
+-    message = "Site updated at #{Time.now.utc}"
++    message = "Site updated at #{Time.now.utc}\n\n[ci skip]"
+
+-    system "git commit -m \"Octopress init\""
++    system "git commit -m \"Octopress init\n\n[ci skip]\""
+```
+
+* README.markdown 加入 build 状态图标
+
+```
+[![Build Status](https://travis-ci.org/yourname/yourname.github.io.png?branch=source)](https://travis-ci.org/yourname/yourname.github.io)
+```
+
 _______________________________________________________________________________
 [^1]: [Octopress 笔记](http://netwjx.github.io/blog/2012/03/18/octopress-note/)
 [^2]: [我的Octopress配置](http://www.yanjiuyanjiu.com/blog/20130402/)
@@ -396,3 +469,7 @@ _______________________________________________________________________________
 [^6]: [Table of Contents in Octopress](http://blog.riemann.cc/2013/04/10/table-of-contents-in-octopress/)
 [^7]: [Jekyll+lunr.js](http://github.com/slashdotdash/jekyll-lunr-js-search)
 [^8]: [使用Jekyll-Bootstrap搭建博客时出现的问题](http://blog.hydra1983.com/my%20tech/2013/05/05/create-a-blog-using-jekyll-bootstrap/)
+[^9]: [打造Octopress博客在线写作平台](http://xuhehuan.com/1761.html)
+[^10]: [Octopress+Prose+Github+Travis CI = Coders' Blog](http://rogerz.github.io/blog/2013/02/21/prose-io-github-travis-ci/)
+[^11]: [travis-ci-nokogiri-LoadError](http://github.com/travis-ci/travis-ci/issues/1919)
+[^12]: [octopress-gist-replied-with-301](http://github.com/imathis/octopress/pull/1506/commits)
