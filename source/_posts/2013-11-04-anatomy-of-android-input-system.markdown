@@ -3,7 +3,7 @@ layout: post
 title: "anatomy-of-android-input-system"
 date: 2013-11-04 16:45
 comments: true
-categories: android
+categories: [android]
 keywords: 
 description: 
 #published: false

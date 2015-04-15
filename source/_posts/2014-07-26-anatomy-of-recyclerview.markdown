@@ -3,7 +3,7 @@ layout: post
 title: "anatomy-of-recyclerview"
 date: 2014-07-26 17:23:01 +0800
 comments: true
-categories: 
+categories: [android]
 keywords: 
 description: 
 #published: false

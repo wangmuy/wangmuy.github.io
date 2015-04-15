@@ -3,7 +3,7 @@ layout: post
 title: "libgdx-skin-load-anatomy"
 date: 2014-09-22 17:35:06 +0800
 comments: true
-categories: 
+categories: [libgdx]
 keywords: 
 description: 
 #published: false

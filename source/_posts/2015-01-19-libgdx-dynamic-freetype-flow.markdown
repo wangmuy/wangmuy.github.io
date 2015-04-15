@@ -3,7 +3,7 @@ layout: post
 title: "libgdx-dynamic-freetype-flow"
 date: 2015-01-19 14:01:02 +0800
 comments: true
-categories: 
+categories: [libgdx]
 keywords: 
 description: 
 #published: false
