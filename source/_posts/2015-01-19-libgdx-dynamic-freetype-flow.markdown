@@ -37,6 +37,14 @@ Label.setText() -> Widget.invalidateHierarchy()
   isStub == false
   newInfo不含在当前子串里:
     getFont(newInfo.size)
+-> (FreeTypeFontGenerator)generator.generateFont(sizePixel, sequence, flip==false)
+-> FreeTypeFontGenerator.generateData(size, chars, flip, packer==null)
+-> FreeTypeFontGenerator.generateData(parameter) {
+  parameter.packer == null:
+    ownsAtlas = true
+    data.regions[i] = new TextureRegion(tex=new Texture()) // new出来的texture
+    return data
+  }
 }
 
 </pre>
