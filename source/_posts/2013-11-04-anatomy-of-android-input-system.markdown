@@ -6,8 +6,10 @@ comments: true
 categories: android
 keywords: 
 description: 
-published: false
+#published: false
 ---
+
+<pre>
 
 版本 android-4.3_r2.2
 ========================
@@ -220,3 +222,5 @@ ActivityThread#main()
 --JNI--> nativePollOnce()
 --C++--> NativeMessageQueue::pollOnce()
 -> Looper::pollOnce()
+
+</pre>
