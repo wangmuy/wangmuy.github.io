@@ -217,7 +217,7 @@ InputDispatcher::finishDispatchCycleLocked()
 Looper机制
 ----------------------------------
 ActivityThread#main()
--> Looper#loop() { 无线循环: 处理 (MessageQueue queue).next() }
+-> Looper#loop() { 无限循环: 处理 (MessageQueue queue).next() }
 -> MessageQueue#next()
 --JNI--> nativePollOnce()
 --C++--> NativeMessageQueue::pollOnce()
