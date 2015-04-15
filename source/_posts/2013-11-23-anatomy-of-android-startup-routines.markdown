@@ -3,11 +3,13 @@ layout: post
 title: "anatomy-of-android-startup-routines"
 date: 2013-11-23 16:10
 comments: true
-categories: 
+categories: [android]
 keywords: 
 description: 
 published: false
 ---
+
+<pre>
 
 版本 android-4.3_r2.2
 ========================
@@ -232,3 +234,6 @@ Launcher应用
 --Binder--> Launcher进程 ApplicationThread#scheduleLaunchActivity()
 -> queueOrSendMessage(H.LAUNCH_ACTIVITY, r)
 --Handler H--> ActivityThread#handleLaunchActivity(r, null) { performLaunchActivity(); handleResumeActivity(); }
+
+
+</pre>

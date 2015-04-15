@@ -3,7 +3,7 @@ layout: post
 title: "anatomy-of-android-package-manager"
 date: 2014-05-15 19:21
 comments: true
-categories: 
+categories: [android]
 keywords: 
 description: 
 published: false

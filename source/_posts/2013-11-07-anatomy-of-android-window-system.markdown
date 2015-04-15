@@ -3,11 +3,13 @@ layout: post
 title: "anatomy-of-android-window-system"
 date: 2013-11-07 15:20
 comments: true
-categories: 
+categories: [android]
 keywords: 
 description: 
 published: false
 ---
+
+<pre>
 
 版本 android-4.3_r2.2
 ========================
@@ -489,3 +491,5 @@ ViewRootImpl#doTraversal()
               checkEglErrors();
           }
           -> (EGL10 sEgl)#eglSwapBuffers() --JNI--> jni_eglSwapBuffers() --C++--> eglSwapBuffers(dpy, sur)
+
+</pre>
