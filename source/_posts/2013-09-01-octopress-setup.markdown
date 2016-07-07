@@ -203,6 +203,8 @@ ul#markdown-toc {
 
 #### 分类标签(支持中文)/categories[^5]
 
+categories 多个以逗号分隔
+
 ##### 中文支持: 确认 `plugins/category_generator.rb` 中 `write_category_indexes` 和 `category_link` 函数包含 `to_url` 调用 (url 不区分大小写, 不用再调 downcase)
 
 ```ruby
