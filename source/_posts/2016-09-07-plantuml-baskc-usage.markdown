@@ -10,7 +10,7 @@ description:
 ---
 
 # 基本框架
-```plantuml
+```
 @startuml
 
 'comment
@@ -50,7 +50,7 @@ end note
 
 # 类图
 
-```plantuml
+```
 class Parent
 class Child
 Parent <|-- Child
@@ -79,7 +79,7 @@ IInterface ()- Parent
 
 # 时序图
 
-```plantuml
+```
 A -> B: -> solid
 B --> A: --> dash
 A ->x B: ->x
