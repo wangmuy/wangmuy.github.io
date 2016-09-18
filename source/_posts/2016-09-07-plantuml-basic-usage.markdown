@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "plantuml-baskc-usage"
+title: "plantuml-basic-usage"
 date: 2016-09-07 11:12:58 +0800
 comments: true
 categories: 
