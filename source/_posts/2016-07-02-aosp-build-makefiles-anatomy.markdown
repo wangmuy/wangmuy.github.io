@@ -91,3 +91,6 @@ device/sample/frameworks/PlatformLibrary/Android.mk
 
 
 function module-installed-files 查找某个module在out目录安装位置
+
+# Overlay
+===============================================================

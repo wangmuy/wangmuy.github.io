@@ -127,12 +127,24 @@ rake generate # 确保 `.gitignore` 包含忽略 _deploy 目录
 # rake deploy # push 到 GitHub 博客项目的 master 分支
 ```
 
+错误排查
+-------------------------------------------------------------------------------
+
+### 找不到python2[^13]
+
+```
+cd D:\Python27
+mklink /H python2.exe python.exe
+```
+
 基本使用和配置
 ===============================================================================
 
 使用
 -------------------------------------------------------------------------------
+
 ### `rake new_post['new-post-today']` 生成新博文
+
 ### `rake new_page['new-page-in-here']` 生成新页面(不属于博文系列)
 
 配置[^2]
@@ -475,3 +487,4 @@ _______________________________________________________________________________
 [^10]: [Octopress+Prose+Github+Travis CI = Coders' Blog](http://rogerz.github.io/blog/2013/02/21/prose-io-github-travis-ci/)
 [^11]: [travis-ci-nokogiri-LoadError](http://github.com/travis-ci/travis-ci/issues/1919)
 [^12]: [octopress-gist-replied-with-301](http://github.com/imathis/octopress/pull/1506/commits)
+[^13]: [Probmes using syntax highlighting with pygments on windows](http://fabian-kostadinov.github.io/2015/01/04/problems-using-syntax-highlighting-with-pygments-on-windows)

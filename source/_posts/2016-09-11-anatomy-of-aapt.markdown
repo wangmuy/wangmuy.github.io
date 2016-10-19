@@ -143,6 +143,7 @@ Main.cpp main() { 收集命令行内容到bundle }
 overlay中定义的 attr 若和framework中相同, 会在 compileAttribute() 报错
 
 ## 解决
+目标
 cp -r frameworks/base/core/res/res/ device/myvendor/overlay/frameworks/base/core/res/ 全部拷贝过来都可用
 
 1. attr 重复定义报错
@@ -158,5 +159,6 @@ createIfNeeded() outTable.addBag() 调用加参数 replace==true
 compileAttribute() 所有addBag() 调用加参数 replace==true
 5. 验证无attr重复定义时可以正确编译
 6. 验证整个framework res拷贝过来 可以正确编译
+7. 验证编普通应用(如Launcher2) 可以正确编译
 
 {% endcomment %}
