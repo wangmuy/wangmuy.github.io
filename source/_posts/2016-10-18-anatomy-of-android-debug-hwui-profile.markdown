@@ -109,6 +109,91 @@ frameworks/base/libs/hwui/renderthread/FrameInfoVisualizer.cpp
 
 ### 绘制
 
+```
+FrameInfoVisualizer::draw()
+  mFrameSource[] 数据
+  initializeRects() 根据数据设置所有 bar rect(left/right, top=bottom=baseline)
+  drawGraph() { foreach bar: nextBarSegment() 计算bar高度; canvas->drawRects() }
+  drawThreshold() 16ms水平线
+```
+
 ### dump
 
+```
+FrameInfoVisulizer::dumpData()
+  [IntentdedVsync, SyncStart]           == Draw
+  [SyncStart, IssueDrawCommandsStart]   == Prepare
+  [IssueDrawCommandsStart, SwapBuffers] == Process
+  [SwapBuffers, FrameCompleted]         == Execute
+```
+
+### 流程
+
+```
+ui线程 ThreadedRenderer.java draw() -> nSyncAndDrawFrame()
+--jni--> nSyncAndDrawFrame()
+-> RenderProxy::syncAndDrawFrame()
+-> DrawFrameTask::drawFrame() { postAndWait() 等待render线程完成当前帧 }
+
+DrawFrameTask 继承自 RenderTask
+
+render线程
+初始化在 RenderProxy::ctor() 中 RenderThread::getInstance(), 是个Looper Thread
+调用 threadLoop()
+-> DrawFrameTask::run() {
+  if(canUnblockUiThread) unblockUiThread() 发信号给ui线程
+  if(canDrawFrame) (CanvasContext context)->draw()
+  if(!canUnblockUiThread) unblockUiThread()
+}
+```
+
 ### 统计
+
+#### Draw
+
+##### IntentdedVsync
+
+```
+FrameInfo.h
+UiFrameInfoBuilder::setVsync(vsyncTime, intendedVsync)
+1. <- CanvasContext::doFrame() {
+  setVsync() 标识vsync时间
+  prepareTree()
+  CanvasContext::draw() }
+<- RenderThread::dispatchFrameCallbacks()
+<--queue-- RenderThread::drainDisplayEventQueue()
+<- RenderThread::threadLoop()
+
+2. <- frameworks/base/core/jni android_view_Surface.cpp ContextFactory::draw()
+```
+
+##### SyncStart
+
+```
+CanvasContext::prepareTree()
+  mCurrentFrameInfo->markSyncStart()
+<- doFrame()
+```
+
+##### IssueDrawCommandsStart
+
+```
+CanvasContext::draw()
+  mCurrentFrameInfo->markIssueDrawCommandsStart()
+```
+
+##### SwapBuffers
+
+```
+1. CanvasContext::draw()
+
+2. FrameInfoVisualizer::draw() 临时mark当前帧
+```
+
+##### FrameCompleted
+
+```
+1. CanvasContext::draw()
+
+2. FrameInfoVisualizer::draw() 临时mark当前帧
+```
