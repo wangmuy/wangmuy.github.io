@@ -94,3 +94,8 @@ function module-installed-files 查找某个module在out目录安装位置
 
 # Overlay
 ===============================================================
+
+# Jack
+
+java-to-jack(definitions.mk)
+<- LOCAL_IS_STATIC_JAVA_LIBRARY 构建static javalib 时候 $(full_classes_jack)的命令 (static_java_library.mk)
