@@ -17,7 +17,7 @@ description:
 
 # 下载
 
-```shell
+```
 git clone https://github.com/BTNC/distro-win.git
 cd distro-win git checkout 2f95bf3ac5c6653b12ce7e5db1c8c0564c501b99 # 此次编译成功的版本
 git submodule update
