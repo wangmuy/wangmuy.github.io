@@ -51,13 +51,16 @@ install.bat
 
 
 # 测试
+
 ## 输入行太长 错误
 th\install\luajit.cmd 按以下注释, 解决 path设置导致的 输入行太长 错误
+
 ```
 REM call %TORCH_INSTALL_DIR%\torch-activate.cmd
 ```
 
 ## 运行测试
+
 ```
 install\torch-activate.cmd
 test.bat
