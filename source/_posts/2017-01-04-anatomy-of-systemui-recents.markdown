@@ -22,12 +22,13 @@ RecentsTaskLoader.initialize() {
 逐个加载推到 mLoadQueue的 Task的相关内容 icon/thumbnail/label
 加载完调用 (Task t).notifyTaskDataLoaded(thumbnail, icon) 通知更新
 
-# 推送加载Task
+# 加载Task
 
 ## 加载所有task
 
 每次加载所有task都使用一个 plan
 
+```
 1. RecentTaskLoader.loadTasks(ctx, plan, opts)
 opts.numVisibleTasks 控制plan加载时是否加载icon, opts.numVisibleTaskThumbnails 控制plan加载时是否加载thumbnail
 1.1. <- Recents.start() 最先调用
@@ -43,8 +44,11 @@ opts.numVisibleTasks 控制plan加载时是否加载icon, opts.numVisibleTaskThu
     1.3.2.1 <- BaseStatusBar.mRecentsPreloadOnTouchListener() navBar的最近应用按钮响应
     1.3.2.2 <- (Handler H) BaseStatusBar.preloadRecentApps() 用于响应IstatusBar binder调用
 1.4. <- TaskStackListenerImpl.run()
+```
 
-# 加载单个task
+## 加载单个task
+
+```
 2. RecentTaskLoader.loadTaskData(Task t) {
     requiresLoad = (applicationIcon==null 或 thumbnail==null)
     if(requiresLoad) mLoadQueue.addTask(t)
@@ -57,3 +61,18 @@ opts.numVisibleTasks 控制plan加载时是否加载icon, opts.numVisibleTaskThu
   2.1.2 TaskStackView.onMeasure() { if(mAwaitingFirstLayout) synchronizeStackViewsWithModel() }
   2处都是view的函数重载
 2.2. <- TaskStackViewFilterAlgorithm.getEnterTransformsForFilterAnimation()
+```
+
+## taskStack 变化监听
+
+```
+注册
+Recents.start() {
+  mSystemServiceProxy.registerTaskStackListener(new TaskStackListenerImpl())
+}
+-> SystemServiceProxy.registerTaskStackListener(l) { mIam.registerTaskStackListener(l) }
+
+变化
+TaskStackListenerImpl.onTaskStackChanged() { mHandler.post(this) }
+--SystemUIService主线程handler--> TaskStackListenerImpl.run()
+```
