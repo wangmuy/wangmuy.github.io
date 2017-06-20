@@ -76,3 +76,17 @@ Recents.start() {
 TaskStackListenerImpl.onTaskStackChanged() { mHandler.post(this) }
 --SystemUIService主线程handler--> TaskStackListenerImpl.run()
 ```
+
+
+## 保存/加载 taskRecord
+
+```
+TaskRecord.saveToXml()
+
+TaskRecord.restoreFromXml() { ActivityRecord.restoreFromXml() }
+```
+
+## 启动
+
+AMS.startActivityFromRecents()
+-> AMS.startActivityFromRecentsInner()

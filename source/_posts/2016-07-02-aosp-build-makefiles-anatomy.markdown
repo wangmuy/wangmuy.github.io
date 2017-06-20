@@ -11,8 +11,32 @@ published: false
 
 aosp 5.1.1_r6
 
+
 # build/envsetup.sh
 ===============================================================
+
+作用:
+* 找 vendorsetup.sh (收集 lunch combo)
+* 设置编译 JAVA_HOME
+* 设置其他shell参数
+  * TARGET_PRODUCT
+  * 不包括 TARGET_DEVICE(在product_config.mk定义)
+  * TARGET_BUILD_VARIANT
+  * TARGET_BUILD_TYPE
+  * TARGET_BUILD_APPS
+* 定义快捷命令
+  * lunch
+  * croot
+  * m
+  * mm
+  * mmm
+  * mma
+  * mmma
+  * mgrep
+  * jgrep
+  * sgrep
+  * resgrep
+  * godir
 
 找device和vendor目录下的vendorsetup.sh 并 source
 addcompletions() 找 sdk/bash_completion 下 [a-z]*.bash 并 source
@@ -27,13 +51,30 @@ addcompletions() 找 sdk/bash_completion 下 [a-z]*.bash 并 source
 设置shell变量, 如 $ANDROID_BUILD_TOP
 
 
+# 调用关系(按先后顺序)
+===============================================================
+
+AndroidProducts.mk
+<- build/core/product_config.mk 通过 $(get-all-product-makefils) 查找device,vendor下AndroidProducts.mk, 导入 all_product_configs
+
+BoardConfig.mk
+<- build/core/envsetup.mk 通过查找 device,vendor 下 $(TARGET_DEVICE)/BoardConfig.mk 包含进来, 设置到 board_config_mk
+  <- TARGET_DEVICE 在 envsetup.mk 定义 TARGET_DEVICE := $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_DEVICE)
+  <- INTERNAL_PRODUCT 在 product_config.mk 定义 INTERNAL_PRODUCT := $(call resolve-short-product-name, $(TARGET_PRODUCT))
+  <- PRODUCT_DEVICE 由不同的 device 位置下定义
+
+AndroidBoard.mk
+<- build/target/board/Android.mk -include $(TARGET_DEVICE_DIR)/AndroidBoard.mk
+<- TARGET_DEVICE_DIR 在 build/core/envsetup.mk 定义 TARGET_DEVICE_DIR := $(patsubst %/,%,$(dir $(board_config_mk)))
+
+
 # 包含关系
 ===============================================================
 $ANDROID_BUILD_TOP/Makefile
 -> build/core/main.mk 定义 TOPDIR 为空, BUILD_SYSTEM := $(TOPDIR)build/core
   -> $(BUILD_SYSTEM)/help.mk
   -> $(BUILD_SYSTEM)/config.mk( 定义 BUILD_XXX 对应的各个mk, 供以后include )
-    -> $(BUILD_SYSTEM)/envsetup.mk
+    -> $(BUILD_SYSTEM)/envsetup.mk ( 定义 PRODUCT_OUT )
       -> $(BUILD_SYSTEM)/product_config.mk
         -> $(BUILD_SYSTEM)/node_fns.mk
         -> $(BUILD_SYSTEM)/product.mk
@@ -50,10 +91,30 @@ $ANDROID_BUILD_TOP/Makefile
   -> build/core/pdk_config.mk
 
 
+# recovery
+===============================================================
+* build/core/Makefile
+
+公共资源路径
+recovery_resources_common := $(call include-path-for, recovery)/res
+include-path-for 定义在 pathmap.mk 中 pathmap_INCL
+默认 recovery_resources_common := $(recovery_resources_common)-xhdpi
+
+私有资源路径
+recovery_resources_private := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery/res))
+
+编译依赖
+recovery_resource_deps := $(shell find $(recovery_resources_common) $(recovery_resources_private) -type f)
+
+拷贝 recovery 资源
+$(INSTALLED_RECOVERY_IMAGE_TARGET): $(recovery_binary)... 等
+        cp -rf $(recovery_resources_common)/* $(TARGET_RECOVERY_ROOT_OUT)/res
+        $(foreach item,$(recovery_resouces_private), cp -rf $(item) $(TARGET_RECOVERY_ROOT_OUT)/)
+
 # apicheck
 ===============================================================
 apicheck.mk { .PHONY checkapi; droidcore: checkapi }
-<- 
+
 
 # Add-on
 ===============================================================
@@ -92,8 +153,10 @@ device/sample/frameworks/PlatformLibrary/Android.mk
 
 function module-installed-files 查找某个module在out目录安装位置
 
+
 # Overlay
 ===============================================================
+
 
 # Jack
 
