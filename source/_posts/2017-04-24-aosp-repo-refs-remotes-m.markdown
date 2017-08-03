@@ -31,6 +31,8 @@ project.py Sync_NetworkHalf()
   self.revisionId == None: Project的创建在 manifest_xml.py _AddMetaProjectMirror()/_ParseProject() 两处revisionId均为None
     remote=self.GetRemote(self.remote.name)
     dst=remote.ToLocal(self.revisionExpr)
+      revisionExpr 顺序: 1.项目的 revision 字段, 2. remote 指定的 revision 字段, 3. default 指定的 revision 字段
+      参考: https://gerrit.googlesource.com/git-repo/+/master/docs/manifest-format.txt
     self.bare_git.symbolic_ref('-m', msg, ref, dst) 设置symbolic-ref } 设置的ref log可通过 git reflog refs/remotes/m/rBranch 查看
 -> Project._InitAnyMRef(ref) { self.bare_ref.symref(ref) }
 -> git_refs.py GitRefs.symref(name) { self._EnsureLoaded(); return self._symref[name] }

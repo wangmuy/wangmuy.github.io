@@ -90,3 +90,25 @@ TaskRecord.restoreFromXml() { ActivityRecord.restoreFromXml() }
 
 AMS.startActivityFromRecents()
 -> AMS.startActivityFromRecentsInner()
+
+## 截屏大小
+
+frameworks/base/core/res/res/values-sw720dp/dimens.xml 添加
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="thumbnail_width">1280dp</dimen>
+    <dimen name="thumbnail_height">720dp</dimen>
+</resources>
+```
+
+## 长按启动
+
+frameworks/base/core/res/res/values-sw720dp/config.xml 添加
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="config_longPressOnHomeBehavior">1</integer>
+</resources>
+```

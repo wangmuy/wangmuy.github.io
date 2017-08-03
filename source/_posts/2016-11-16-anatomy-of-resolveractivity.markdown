@@ -49,14 +49,14 @@ PMS.findPreferredActivity()
 定死Home应用:
 初始方法:
 加在PMS.resolveIntent() {
-  query=queryIntentActivityes();
+  query=queryIntentActivities();
   if(query含Launcher){滤掉其他或直接返回唯一};
   return chooseBestActivity(query) }
 缺陷:
-PMS.getHomeActivityes()没有走这个流程(Recents等有调用此接口)
+PMS.queryIntentActivities()没有走这个流程(Recents等有调用此接口)
 解决:
-queryIntentActivityes() 有多个return出口, 不好直接改写
-将 queryIntentActivityes() 包起来, 改名 queryIntentActivityesInner(), 重新提供一个
-queryIntentActivityes() {
+queryIntentActivities() 有多个return出口, 不好直接改写
+将 queryIntentActivities() 包起来, 改名 queryIntentActivityesInner(), 重新提供一个
+queryIntentActivities() {
   query=queryIntentActivityesInner();
   if(query含Launcher){滤掉其他或直接返回唯一} }
