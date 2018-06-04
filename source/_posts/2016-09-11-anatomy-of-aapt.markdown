@@ -8,12 +8,21 @@ keywords:
 description: 
 #published: false
 ---
+# 概念
+```
+Resource Id 32位 = 8(packageId) + 8(typeId) + 16(nameId)
+ResourceTable.cpp::makeResId()
+```
+
 # framework-res典型调用
 ```bash
 out/host/linux-x86/bin/aapt package -u -x -z  --pseudo-localize   -M frameworks/base/core/res/AndroidManifest.xml -S device/myvendor/overlay/frameworks/base/core/res/res -S frameworks/base/core/res/res -A frameworks/base/core/res/assets  --min-sdk-version 22 --target-sdk-version 22 --product phone --version-code 22 --version-name 5.1.1-2.0.16   -F out/target/common/obj/APPS/framework-res_intermediates/package-export.apk
 ```
 
 # 流程
+
+## 总体流程
+
 ```
 Main.cpp main() { 收集命令行内容到bundle }
 -> handleCommand(bundle)
@@ -21,8 +30,10 @@ Main.cpp main() { 收集命令行内容到bundle }
   assets=new AaptAssets();
   assets.slurpFromArgs(bundle) 收集所有文件信息
   builder = new ApkBuilder(configFilter)
-  if(有资源文件) buildResources(bundle, assets, builder)
-  assets.applyJavaSymbols()
+  if(有资源文件) buildResources(bundle, assets, builder) 收集和编译resource, 生成id
+  assets.applyJavaSymbols() { 决定哪些内容会输出到 R.java
+		若是framework-res, AaptAssets.mHavePrivateSymbols==false 没有排除任何内容
+		若是普通应用, 这里排除掉所有framework中定义的私有内容. }
   writeResourceSymbols(bundle, assets, ...)
   writeProguardFile(bundle, assets)
   if(outputAPKFile) addResourcesToBuilder(assets, builder) 生成apk }
@@ -42,14 +53,23 @@ Main.cpp main() { 收集命令行内容到bundle }
   foreach(overlay)
     compileResourceFile(bundle, assets, file, it.getParams(), overlay=true, &table)
 
-  table.assignResourceIds() 生成资源id
+  table.assignResourceIds() {
+		package.applyPublicTypeOrder() {
+			public类型 的按 Type.mPublicIndex 重新排序(之后的 p.getOrderedTypes() 返回的就是已排序Type)
+			Type.mPublicIndex 通过 addPublic() 的顺序设置, 就是在 values/public.xml 中的定义顺序 }
+		遍历 p.getOrderedTypes(): 每个type.getOrderedConfigs() 的 entry 生成 attribute
+		遍历 p.getOrderedTypes():
+		  每个type.applyPublicEntryOrder() 按 entryId(即资源id中的nameId) 重新排序(之后的 t.getOrderedConfigs() 返回就是已排序ConfigList)
+			按顺序 ConfigList.setEntryIndex()
+		按顺序遍历 每个 type中的 ConfigList中的 Entry: entry.assignResouceIds() 赋值bag中每个key的资源id }
 
   编译 layout/anim/animator/interpolator/transition/xml/drawable/color/menu 中的xml文件
   compileXmlFile()
 
   编译自动生成的xml
   编译manifest
-  生成最终resource table, 重新flatten, 输出到resources.arsc
+  生成最终resource table: table.addSymbols(assets->getSymbolsFor("R")) 按已排序好的 Type 和 ConfigList 添加 symbol
+	重新flatten, 输出到resources.arsc
   validate检查一遍
 }
 
@@ -59,7 +79,8 @@ Main.cpp main() { 收集命令行内容到bundle }
 	case "skip": 跳过
 	case "eat_comment": 跳过
 	case "public": {
-	  取type,name,id. outTable.addPublic()
+	  取type,name,id. outTable.addPublic() -> Type.addPublic()
+		Type.mPublicIndex = typeId(即资源id中间8位值)
 	  symbols.addNestedSymbol(type, srcPos)
 	  symbols.makeSymbolPublic(name, srcPos) }
 	case "public-padding": 略
@@ -83,7 +104,7 @@ Main.cpp main() { 收集命令行内容到bundle }
 	case "string-array": 略
 	case "integer-array": 略
 
-	对bag/style/plurals/array/string-array/integer-array: curIsBag=true
+	对bag/style/plurals/array/string-array/integer-array: curIsBag=true 解释: bag其实就是 自定义枚举集合 的意思
 	对array/string-array/integer-array: curIsBagReplaceOnOverwrite=true
 
 	if(curIsBag)
@@ -91,8 +112,11 @@ Main.cpp main() { 收集命令行内容到bundle }
 	  parseAndAddBag() {
 	  	outTable.addBag() overlay overwrite==true时, framework已有的可以覆盖, 没有的要用add-resource }
 	else
-	  parseAndAddEntry() {
-	  	对于overlay, 传入的overwrite==true, framework已有的可以覆盖, 没有的要用add-resource }
+	  parseAndAddEntry(ResourceTable *outTable) {
+	  	对于overlay, 传入的overwrite==true, framework已有的可以覆盖, 没有的要用add-resource
+			outTable.addEntry() 实际添加到ResourceTable中对应 Type 的
+			  (DefaultKeyedVector<String16, sp<ConfigList> > mConfigs).valueFor(entry)
+			}
 
   检查确认每个resource都有 default variant
 }
@@ -134,6 +158,31 @@ Main.cpp main() { 收集命令行内容到bundle }
 	mBag.add(key, item)
 	mBag是Entry成员, 类型是 KeyedVector<String16, Item> }
 	Item 类型有 TYPE_BAG/TYPE_ITEM, 当类型是TYPE_BAG时 mBag 包含当前bag的所有item
+
+
+ResourceTable.cpp compileXmlFile(*bundle, &assets, *table, XMLNode& root, AaptFile& target) {
+  root.assignResouceIds(assets, table) 设置的 id 会在 flatten 时用到
+	root.parseValues(assets, table) 记录当前解析的xml源码行号
+}
+```
+
+# 写到 R.java 的流程
+
+```
+Command.cpp::doPackage() { framework 生成时包名就是自身, 所以 havePrivateSymbols() 为 false }
+-> Resource.cpp::WriteResourceSymbols(AaptAssets assets, includePrivate=true) {
+	遍历 assets->getSymbols(): 这里的symbol就是上面的 addSymbol() 加的
+	  可能不同 类前缀包名/R.java 输出位置
+	  WriteSymbolClass(AaptSymbols symbols)
+}
+-> WriteSymbolClass(AaptSymbols symbols) {
+	  // framework-res 编译过程中 havePrivateSymbols()==false, 所以下面的遍历没有跳过任何内容
+	  遍历 symbols->getSymbols() 所有 TYPE_INT32 类型(跳过非 javaSymbol): (AaptSymbolEntry sym).int32Val
+	  遍历 symbols->getSymbols() 所有 TYPE_STRING 类型(跳过非 javaSymbol): sym.stringVal.string()
+		遍历 symbols->getNestedSymbols(), styleableSymbols除外: 递归 WriteSymbolClass()
+		writeLayoutClasses(styleableSymbols)
+		if emitCallback: writeResourceLoadedCallback() }
+  -> 递归调用 WriteSymbolClass
 ```
 
 {% comment %}
