@@ -51,9 +51,9 @@ if (permission == android.Manifest.permission.SYSTEM_ALERT_WINDOW) {
         List<RunningAppProcessInfo> processInfos = ActivityManagerNative.getDefault().getRunningAppProcesses();
         for(RunningAppProcessInfo p: processInfos) {
             if (p.uid == callingUid) {
-                Log.d(TAG, "wzd checkAddPermission callingUid=p " + p);
+                Log.d(TAG, "checkAddPermission callingUid=p " + p);
                 if (p.importance <= RunningAppProcessInfo.IMPORTANCE_VISIBLE) {
-                    Log.d(TAG, "wzd checkAddPermission p.importance=" + p.importance);
+                    Log.d(TAG, "checkAddPermission p.importance=" + p.importance);
                 }
             }
         }
