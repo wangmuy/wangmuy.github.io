@@ -1,0 +1,480 @@
+---
+layout: post
+title: "用Octopress在GitHub上搭建博客"
+date: 2013-09-01 13:23
+comments: true
+categories: [博客搭建]
+keywords: octopress, setup, 配置, 博客
+description: octopress配置
+---
+
+* 目录
+{:toc}
+<!--more-->
+
+备料
+===============================================================================
+
+注册 GitHub 账户并创建一个空仓库
+-------------------------------------------------------------------------------
+* (**假定注册名为 yourname, 注册邮箱 yourname@gmail.com**, 下同)
+* 创建空仓库 yourname.github.io
+
+下载并配置 Git
+-------------------------------------------------------------------------------
+
+### 下载
+* Linux
+  * 使用系统包管理安装git
+
+* Windows
+  * [MsysGit](http://code.google.com/p/msysgit/downloads/list)
+  * vim着色：MsysGit上的vim着色文件不全, 可从完整vim73的syntax目录拷过来, 如 `/usr/share/vim/vim73/syntax`
+
+### 配置
+设置 LANG 环境变量(可以不设LC_ALL; 可以不是zh_CN, 后缀是UTF-8即可;)
+
+```bash
+# locale和中文显示
+touch ~/.bashrc
+echo 'export LANG="en_US.UTF-8"' >> ~/.bashrc
+touch ~/.inputrc
+echo 'set meta-flag on' >> ~/.inputrc
+echo 'set convert-meta off' >> ~/.inputrc
+echo 'set input-meta on' >> ~/.inputrc
+echo 'set output-meta on' >> ~/.inputrc
+touch ~/.vimrc
+echo 'set fileencodings=utf-8' >> ~/.vimrc
+# git options
+git config --global user.name "yourname"
+git config --global user.email "yourname@gmail.com"
+git config core.autocrlf false
+git config credential.helper 'cache --timeout=3600' # Keep your password cached in memory
+git config github.user "yourname"
+# ssh key
+ssh-keygen -t rsa -C "yourname@gmail.com"
+cat ~/.ssh/id_rsa.pub # 将内容复制到 https://github.com/settings/ssh 上
+```
+
+下载并配置 Ruby(1.9.3)
+-------------------------------------------------------------------------------
+
+### 下载
+* [Windows](http://rubyinstaller.org/downloads)
+  * 7zip包解压(假设到 D:\ruby1.9.3), 添加到系统PATH
+  * 下载并配置 DevKit([wiki](http://github.com/oneclick/rubyinstaller/wiki/Development-Kit))
+    * 1.9.3 配对 [DevKit-tdm](http://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe), 解压(假设到 D:\ruby1.9.3-DevKit), 添加到系统PATH
+
+```bash
+cd /D/ruby1.9.3-DevKit
+ruby dk.rb init
+ruby dk.rb review # 确认ruby位置正确
+ruby dk.rb install
+# 验证DevKit
+gem install json --platform=ruby # 能看到 build native
+ruby -rubygems -e "require 'json'; puts JSON.load('[42]').inspect" # 确认json gem安装成功
+```
+
+* Linux
+  * 使用 [RVM(Ruby版本管理)](http://rvm.io/rvm/install)
+
+```bash
+# install RVM stable with ruby in user's $HOME
+\curl -L http://get.rvm.io | bash -s stable --ruby # 反斜杠是防止使用到 ~/.curlrc 定义的 alias
+# rvm安装完毕
+# rvm list known
+rvm install 1.9.3
+rvm use 1.9.3 --default
+# ruby -v
+```
+
+### 配置
+
+```bash
+# gem更新源
+gem sources --remove http://rubygems.org/ # 要包含最后的斜杠
+gem sources -a http://ruby.taobao.org/
+gem sources -l # 验证源只有 ruby.taobao.org
+```
+
+安装Octopress
+===============================================================================
+
+```bash
+git clone git://github.com/imathis/octopress.git mygithubio
+cd mygithubio
+gem install bundler # 不是 bundle
+bundle install # 下载安装依赖项目(bundle是ruby的依赖管理工具)
+rake install # 编译octopress项目(Rake to Ruby == Make to C)
+```
+
+```bash
+rake setup_github_pages
+```
+* `hellip; 不是内部命令`错误 [^1]
+  * `Rakefile`文件 `My Octopress Page is coming soon &hellip;` 在 `&hellip;` 前加 `^` (Windows cmd转义)
+
+* setup_github_pages目标主要做了2件事:
+  * 将原来git upstream的 origin 改到 octopress
+  * 将你在 GitHub 上的博客地址(如 yourname.github.io) 作为 origin. 验证: `git remote -v`
+
+```bash
+# rake new_post['hello octopress'] # 创建新markdown博文
+rake generate # 确保 `.gitignore` 包含忽略 _deploy 目录
+# rake preview # 可通过本机4000端口预览
+# rake deploy # push 到 GitHub 博客项目的 master 分支
+```
+
+错误排查
+-------------------------------------------------------------------------------
+
+### 找不到python2[^13]
+
+```
+cd D:\Python27
+mklink /H python2.exe python.exe
+```
+
+基本使用和配置
+===============================================================================
+
+使用
+-------------------------------------------------------------------------------
+
+### `rake new_post['new-post-today']` 生成新博文
+
+### `rake new_page['new-page-in-here']` 生成新页面(不属于博文系列)
+
+配置[^2]
+-------------------------------------------------------------------------------
+
+### _config.yml
+```yaml
+# 博客链接格式
+permalink: /blog/:year/:month-:day-:title.html
+# 使用kramdown
+markdown: kramdown
+# SEO
+description: yourname的技术博客
+```
+
+### 自动生成目录[^6]
+
+#### 使用kramdown(下面配置), 写博客时加入以下两行即可自动生成目录:
+
+```
+* list element with functor item
+{:toc}
+```
+
+#### 目录样式
+`touch sass/custom/_styles.scss`, 添加
+
+```css
+#markdown-toc:before {
+  content: "TOC";
+  font-weight: bold;
+}
+
+ul#markdown-toc {
+  list-style: none;
+  display: inline-block;
+//  float: left;
+  background-color: LightGray;
+  margin-right:2em;
+  border-radius: 1em;
+  box-shadow: 0px 1px 4px;
+  -moz-box-sizing: border-box;
+  padding: 10px 10px 10px 20px;
+}
+```
+
+### 侧栏
+
+#### about me
+
+##### `_config.yml` 的 `default_asides` 里添加 `custom/asides/about.html`
+
+##### `touch source/_includes/custom/asides/about.html`, 添加内容
+
+```html
+<section>
+	<h1>About Me</h1>
+	<p>一句话介绍</p>
+	<p>微博: <a href="http://weibo.com/yourname">@yourweiboname</a><br/>
+	<p>豆瓣: <a href="http://douban.com/yourname">@yourdoubanname</a><br/>
+	</p>
+</section>
+```
+
+#### 分类标签(支持中文)/categories[^5]
+
+categories 多个以逗号分隔
+
+##### 中文支持: 确认 `plugins/category_generator.rb` 中 `write_category_indexes` 和 `category_link` 函数包含 `to_url` 调用 (url 不区分大小写, 不用再调 downcase)
+
+```ruby
+# 109行附近
+self.write_category_index(File.join(dir, category.to_url), category)
+
+# 176行附近
+"<a class='category' href='/#{dir}/#{category.to_url}/'>#{category}</a>"
+```
+
+##### `touch plugins/category_list_tag.rb`, 添加内容
+
+```ruby
+module Jekyll
+  class CategoryListTag < Liquid::Tag
+    def render(context)
+      html = ""
+      categories = context.registers[:site].categories.keys
+      categories.sort.each do |category|
+        posts_in_category = context.registers[:site].categories[category].size
+        html << "<li class='category'><a href='/blog/categories/#{category.to_url}/'>#{category} (#{posts_in_category})</a></li>\n"
+      end
+      html
+    end
+  end
+end
+
+Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
+```
+
+##### `touch source/_includes/asides/category_list.html`, 添加内容
+
+```html
+<section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    {% category_list %}
+  </ul>
+</section>
+```
+
+##### `_config.yml` 中 `default_asides` 添加 `asides/category_list.html`
+
+
+### Jekyll+lunr.js 即时搜索[^7]
+* 下载 [jekyll_lunr_js_search.rb](http://github.com/slashdotdash/jekyll-lunr-js-search/raw/master/build/jekyll_lunr_js_search.rb) 放到 `plugins` 目录. 可按 [^8] 中提示修改一个小bug.
+* 下载 [jquery.lunr.search.js](http://github.com/slashdotdash/jekyll-lunr-js-search/raw/master/js/jquery.lunr.search.js) 放到 `source/javascripts` 目录
+* jQuery 已在 Octopress 中内置: `source/javascripts/libs/jquery.min.js`
+* 下载 以下几个 javascript 依赖, 放到 `source/javascripts` 目录
+  * [lunr.min.js](http://raw.github.com/olivernn/lunr.js/master/lunr.min.js)
+  * [mustache.js](http://github.com/janl/mustache.js/raw/master/mustache.js)
+  * [date.format.js](http://stevenlevithan.com/assets/misc/date.format.js)
+  * [URI.min.js](http://github.com/medialize/URI.js/raw/gh-pages/src/URI.min.js)
+* `gem install nokogiri json` 安装依赖, `gem list` 查看 nokogiri 版本(假设为 `1.6.0`)
+* 修改 `Gemfile`, 标明依赖 `gem 'nokogiri', '~> 1.6.0'`
+* `rake new_page['search']`, 编辑 search页(`source/search/index.markdown`):
+
+{% gist 7367525 %}
+
+* 屏蔽页面被索引有两种方式
+  * 每个 markdown页 的 YAML配置头 加 `exclude_from_search: true`
+  * `_config.yml` 统一添加(即使没有也添加, 防止索引运行出错)
+
+```yaml
+lunr_search:
+  excludes: [rss.xml, atom.xml]
+```
+
+* 首页添加链接到 search页面
+* 重新 `rake generate`
+
+
+### Header
+* about页面
+
+```bash
+rake new_page['about'] # 生成 source/about/index.markdown
+```
+
+头部导航菜单 `/source/_includes/custom/navigation.html` 加入 about页面 链接.
+
+### 字体
+* `source/_includes/custom/head.html` 全部注释掉, 不装载 Google Webfonts(此字体没有包含中文, 粗体中文显示不出)
+* `sass/custom/_fonts.scss` 添加([最佳 Web 中文默认字体](http://lifesinger.wordpress.com/2011/04/06/best-web-default-fonts/))
+
+```css
+$heading-font-family: arial, sans-serif;
+$header-title-font-family: arial, sans-serif;
+$header-subtitle-font-family: arial, sans-serif;
+```
+
+社交功能
+===============================================================================
+
+分享功能
+-------------------------------------------------------------------------------
+
+### [JiaThis](http://www.jiathis.com)[^3]
+`_config.yml` 加入变量
+
+```yaml
+# JiaThis
+jiathis: true
+```
+
+`source/_includes/post/sharing.html` 尾部 `</div>` 之前添加
+
+```yaml
+{% if site.jiathis %}
+  {% include post/jiathis.html %}
+{% endif %}
+```
+
+`touch source/_includes/post/jiathis.html`, 将从 JiaThis 获得的代码放入其中
+
+评论功能
+-------------------------------------------------------------------------------
+
+### [多说](http://duoshuo.com)[^4]
+`_config.yml` 加入变量
+
+```yaml
+# DuoShuo comments
+duoshuo_comments: true
+duoshuo_short_name: yourname
+```
+
+`source/_layouts/post.html` 中 disqus 代码下添加 (单独页面也加评论的话 `source/_layouts/page.html` 中也放相同代码)
+
+```html
+{% if site.duoshuo_short_name and site.duoshuo_comments == true and page.comments == true %}
+  <section>
+    <h1>Comments</h1>
+    <div id="Comments" aria-live="polite">{% include post/duoshuo-thread.html %}</div>
+  </section>
+{% endif %}
+```
+
+创建 `source/_includes/post/duoshuo-thread.html`, 将从多说获得的代码放入其中
+
+统计功能
+-------------------------------------------------------------------------------
+
+### [站长统计](http://www.cnzz.com)
+`source/_includes/custom/footer.html` 中加入注册后给出的统计代码.
+
+换主题
+===============================================================================
+[bootstrap-theme](http://github.com/bkutil/bootstrap-theme) , 或者[其他的](http://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes)
+
+```bash
+git clone http://github.com/bkutil/bootstrap-theme.git .themes/bootstrap-theme
+rake install['bootstrap-theme'] # 注意: 换主题后所有非custom目录下的内容都会被覆盖掉！！
+rake generate
+```
+
+i18n
+===============================================================================
+I forked from [hendricius/jekyll-i18n](http://github.com/hendricius/jekyll-i18n.git) and adapted to octopress(in [octopress-i18n](http://github.com/wangmuy/octopress-i18n)).
+
+However, AFAIK there's no i18n capable themes right now. You have to create your own theme branch and adapt to i18n.
+
+html中写
+
+```yaml
+{% i18nvar %}
+```
+
+, `source/_locales/zh_CN.yml` 中定义对应变量 `i18nvar: 中文名称`
+
+
+更新
+===============================================================================
+```bash
+git pull octopress master # 自动或手动merge
+bundle install
+rake update_source
+rake update_style
+```
+
+使用 travis-ci 自动编译发布
+===============================================================================
+* 登录[Travis-CI](https://travis-ci.org), 注册授权,  右上角 Accounts, 对应项目repo 置为 ON
+* 生成 https 访问 github 所需的 token. 可用[^9]中的界面方法, 或[^10]中的curl直接获取
+* `gem install travis; travis encrypt GH_TOKEN=<token>` 生成加密的token
+* 修改 .travis.yml, 几点注意:
+  * 调用 rake 命令时前面要加 `bundle exec `, 防止 rake 命令版本冲突
+  * Travis 默认使用 `Gemfile.lock` 中的信息, 但此文件中包含平台相关的build信息, 会导致nokogiri编译问题[^11]. 所以最好是将 `Gemfile` 拷贝出一份独立的 `Gemfile.travis` 供 Travis 使用.
+  * `Gemfile.travis` 中的 `source` 此时也可改用通用的 [rubygems](https://rubygems.org)
+  * Travis上构建时如果出现 `Liquid Exception: Gist replied with 301` 错误提示, 是Octopress的一个bug, 则需要更新一下Octopress[^12]
+
+```yaml
+branches:
+  only:
+  - source
+language: ruby
+rvm:
+  - 1.9.3
+gemfile:
+  - Gemfile.travis
+before_script:
+  - git config --global user.name "yourname"
+  - git config --global user.email "yourname@gmail.com"
+  - export REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
+  - bundle exec rake setup_github_pages[$REPO_URL]
+script:
+  - bundle exec rake generate
+after_script:
+  - bundle exec rake deploy
+env:
+  global:
+  - GH_REPO="your_github_name/your_github_name.github.io"
+  - secure: "<your-travis-encrypted-token>"
+```
+
+* 修改 Rakefile
+
+隐藏token
+
+```diff
+-      puts "Added remote #{repo_url} as origin"
++      puts "Added remote as origin" # don't put repo_url in travis-ci as it may contains token
+
+-    system "git push origin #{deploy_branch} --force"
++    system "git push origin #{deploy_branch} --force --quiet" # hide github token
+```
+
+支持https提交
+
+```diff
+-    puts "(For example, 'git@github.com:yourname/yourname.github.com)"
++    puts "(For example, 'git@github.com:yourname/yourname.github.com' or 'https://github.com/yourname/yourname.github.com')"
+
+-  user = repo_url.match(/:([^\/]+)/)[1]
++  user = repo_url.match(/[\/:]([^\/]+)\/[^\/]+$/)[1]
+```
+
+跳过不需要触发travis的commit
+
+```diff
+-    message = "Site updated at #{Time.now.utc}"
++    message = "Site updated at #{Time.now.utc}\n\n[ci skip]"
+
+-    system "git commit -m \"Octopress init\""
++    system "git commit -m \"Octopress init\n\n[ci skip]\""
+```
+
+* README.markdown 加入 build 状态图标
+
+```
+[![Build Status](https://travis-ci.org/yourname/yourname.github.io.png?branch=source)](https://travis-ci.org/yourname/yourname.github.io)
+```
+
+_______________________________________________________________________________
+[^1]: [Octopress 笔记](http://netwjx.github.io/blog/2012/03/18/octopress-note/)
+[^2]: [我的Octopress配置](http://www.yanjiuyanjiu.com/blog/20130402/)
+[^3]: [在 Windows7 下从头开始安装部署 Octopress](http://sinosmond.github.io/blog/2012/03/12/install-and-deploy-octopress-to-github-on-windows7-from-scratch/)
+[^4]: [为 Octopress 添加多说评论系统](http://ihavanna.org/internet/2013-02/add-duoshuo-commemt-system-into-octopress.html)
+[^5]: [讓Octopress有中文分類及側邊列](http://selfecy.com/blog/2013/07/13/rang-octopressyou-zhong-wen-fen-lei-ji-ce-bian-lie/)
+[^6]: [Table of Contents in Octopress](http://blog.riemann.cc/2013/04/10/table-of-contents-in-octopress/)
+[^7]: [Jekyll+lunr.js](http://github.com/slashdotdash/jekyll-lunr-js-search)
+[^8]: [使用Jekyll-Bootstrap搭建博客时出现的问题](http://blog.hydra1983.com/my%20tech/2013/05/05/create-a-blog-using-jekyll-bootstrap/)
+[^9]: [打造Octopress博客在线写作平台](http://xuhehuan.com/1761.html)
+[^10]: [Octopress+Prose+Github+Travis CI = Coders' Blog](http://rogerz.github.io/blog/2013/02/21/prose-io-github-travis-ci/)
+[^11]: [travis-ci-nokogiri-LoadError](http://github.com/travis-ci/travis-ci/issues/1919)
+[^12]: [octopress-gist-replied-with-301](http://github.com/imathis/octopress/pull/1506/commits)
+[^13]: [Probmes using syntax highlighting with pygments on windows](http://fabian-kostadinov.github.io/2015/01/04/problems-using-syntax-highlighting-with-pygments-on-windows)
