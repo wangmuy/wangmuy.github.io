@@ -3,20 +3,23 @@
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
     
-    <title>Tags | wangmuy 的技术博客</title>
+    <title>LibGDX skin load 源码分析 | wangmuy 的技术博客</title>
     
     
-        <meta name="keywords" content="Tags">
+        <meta name="keywords" content="LibGDX skin load 源码分析">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Tags">
-<meta property="og:url" content="http://yoursite.com/tags/index.html">
+    <meta name="description" content="123构造函数里设置 SkinLoaderAssetManager.ctor() &amp;#123; setLoader(Skin.class, new SkinLoader(resolver==new InternalFileHandleResolver())) &amp;#125;-&amp;gt; AssetManager.setLoader(Skin.class, suffix==null, SkinLoade">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LibGDX skin load 源码分析">
+<meta property="og:url" content="http://yoursite.com/libgdx/skin-load/index.html">
 <meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="123构造函数里设置 SkinLoaderAssetManager.ctor() &amp;#123; setLoader(Skin.class, new SkinLoader(resolver==new InternalFileHandleResolver())) &amp;#125;-&amp;gt; AssetManager.setLoader(Skin.class, suffix==null, SkinLoade">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-02T14:43:32.224Z">
+<meta property="og:updated_time" content="2019-05-03T12:41:57.448Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tags">
+<meta name="twitter:title" content="LibGDX skin load 源码分析">
+<meta name="twitter:description" content="123构造函数里设置 SkinLoaderAssetManager.ctor() &amp;#123; setLoader(Skin.class, new SkinLoader(resolver==new InternalFileHandleResolver())) &amp;#125;-&amp;gt; AssetManager.setLoader(Skin.class, suffix==null, SkinLoade">
     
 
     
@@ -166,13 +169,13 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             libgdx
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -272,16 +275,109 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><section class="layout-wrap">
-    <div class="layout-title">
-        <span>Tags</span>
-    </div>
-    <div class="layout-wrap-inner tag-cloud">
+            <section id="main"><article id="post-libgdx/skin-load" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
         
-            <a href="/tags/android/" style="font-size: 14px;">android</a> <a href="/tags/fresco/" style="font-size: 14px;">fresco</a>
         
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/libgdx/">libgdx</a>
     </div>
-</section></section>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/libgdx/skin-load/">
+            <time datetime="2014-09-22T09:35:06.000Z" itemprop="datePublished">2014-09-22</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/libgdx/skin-load.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/libgdx/skin-load.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/libgdx/skin-load.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            LibGDX skin load 源码分析
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">构造函数里设置 SkinLoader</span><br><span class="line">AssetManager.ctor() &#123; setLoader(Skin.class, new SkinLoader(resolver==new InternalFileHandleResolver())) &#125;</span><br><span class="line">-&gt; AssetManager.setLoader(Skin.class, suffix==null, SkinLoader)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">用户程序调 load</span><br><span class="line">AssetManager.load(fileName, Skin.class)</span><br><span class="line">-&gt; AssetManager.load(fileName, Skin.class, parameter==null) &#123;</span><br><span class="line">  getLoader(Skin.class, fileName);</span><br><span class="line">  loadQueue.add(new AssetDescriptor(fileName, Skin.class, parameter))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">用户程序调 finishLoading</span><br><span class="line">AssetManager.finishLoading() &#123; while(!update()) ThreadUtils.yield() &#125;</span><br><span class="line">-&gt; AssetManager.update() &#123; nextTask(); updateTask(); &#125;</span><br><span class="line">AssetManager.nextTask() &#123; assetDesc = loadQueue.removeIndex(0); addTask(assetDesc) or inc ref &#125;</span><br><span class="line">AssetManager.updateTask() &#123; task.update(); addAsset(fileName, type, task.getAsset()) &#125;</span><br><span class="line">-&gt; AssetLoadingTask.update() &#123; handleSyncLoader() or handleAsyncLoader() &#125;</span><br><span class="line">SkinLoader 是 AsynchronousAssetLoader, 这里会调用 handleAsyncLoader()</span><br><span class="line">-&gt; AssetLoadingTask.handleAsyncLoader() &#123;</span><br><span class="line">    // 执行多次,  因为submit到线程池中, 被调 call().</span><br><span class="line">    // SkinLoader.getDependencies() 加入装载 TextureAtlas 的依赖</span><br><span class="line">    exec0:</span><br><span class="line">	dependenciesLoaded == false &amp;&amp; depsFuture == null:</span><br><span class="line">	    depsFuture = (AsyncExecutor executor).submit(this)</span><br><span class="line">	exec1:</span><br><span class="line">	dependenciesLoaded == false &amp;&amp; depsFuture.isDone():</span><br><span class="line">	    dependenciesLoaded = true</span><br><span class="line">	可能的exec2:</span><br><span class="line">	loadFuture == null &amp;&amp; !asyncDone:</span><br><span class="line">	    loadFuture = executor.submit(this)</span><br><span class="line">	    // 会在线程池中执行 AssetLoadingTask.call() -&gt; 即本loader的 loadAsync()</span><br><span class="line">	最后的exec:</span><br><span class="line">	asyncDone:</span><br><span class="line">	    asset = asyncLoader.loadSync(manager, fileName, resolve(loader, assetDesc), params)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">SkinLoader.loadSync() &#123; new Skin(atlas).load(file) &#125;</span><br><span class="line">-&gt; Skin.load(skinFile) &#123; getJsonLoader().fromJson(Skin.class, skinFile) &#125;</span><br><span class="line">-&gt; Json.fromJson(type==Skin.class) &#123; this.readValue(type, null, new JsonReader().parse(file)) &#125;</span><br><span class="line"></span><br><span class="line">JsonReader.parse(file) &#123; JsonReader.parse(file.reader(&quot;UTF-8&quot;)) &#125;</span><br><span class="line">-&gt; JsonReader.parse(Reader reader) -&gt; JsonReader.parse(data, 0, offset)</span><br><span class="line"></span><br><span class="line">FileHandle.reader(charset) &#123; return new InputStreamReader(read(), charset) &#125;</span><br><span class="line">FileHandle.read() &#123; return new FileInputStream(file()) &#125;</span><br><span class="line">FileHandle.file() &#123; return java.io.File &#125;</span><br><span class="line"></span><br><span class="line">Skin.getJsonLoader(skinFile) &#123; return 匿名Json新类 &#125;</span><br><span class="line">匿名Json类.readValue(Skin.class, null, jsonData) &#123;</span><br><span class="line">	jsonData.isString() == false:</span><br><span class="line">	    super.readValue(Skin.class, elementType==null, jsonData)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Json.readValue(Skin.class, elementType==null, jsonData) &#123;</span><br><span class="line">	jsonData.isObject() == true:</span><br><span class="line">	    typeName == null: className = null</span><br><span class="line">	    serializer = classToSerializer.get(Skin.class) // 在Skin.java匿名类中有SetSerializer</span><br><span class="line">	    serializer.read(this, jsonData, type)</span><br><span class="line">&#125;</span><br><span class="line">-&gt; 匿名Json类.read() &#123; for(valueMap) readnamedObjects(json, ClassReflection.forName(valueMap.name()), valueMap) &#125;</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/libgdx/dynamic-freetype/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    LibGDX 实现 动态中文/freetype 加载
+                
+            </div>
+        </a>
+    
+    
+        <a href="/android/recyclerview/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">RecyclerView 源码分析</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
         </div>
         <footer id="footer">
     <div class="outer">

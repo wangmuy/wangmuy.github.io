@@ -2,6 +2,76 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/misc/plantuml%E5%9F%BA%E7%A1%80/</loc>
+    
+    <lastmod>2019-05-03T13:05:47.618Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/misc/duilib%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2019-05-03T13:02:18.674Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/fresco/</loc>
+    
+    <lastmod>2019-05-03T12:58:00.981Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/build-system/</loc>
+    
+    <lastmod>2019-05-03T12:51:57.651Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/libgdx/dynamic-freetype/</loc>
+    
+    <lastmod>2019-05-03T12:45:15.684Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/libgdx/skin-load/</loc>
+    
+    <lastmod>2019-05-03T12:41:57.448Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/recyclerview/</loc>
+    
+    <lastmod>2019-05-03T12:38:10.302Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/startup-routines/</loc>
+    
+    <lastmod>2019-05-03T12:35:02.316Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/nodejs/crypto%E6%A8%A1%E5%9D%97%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2019-05-03T12:32:08.680Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/window-system/</loc>
+    
+    <lastmod>2019-05-03T12:19:07.295Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/android/input-system/</loc>
     
     <lastmod>2019-05-02T15:35:16.122Z</lastmod>

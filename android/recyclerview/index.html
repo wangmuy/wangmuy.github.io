@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    
+    <title>RecyclerView 源码分析 | wangmuy 的技术博客</title>
+    
+    
+        <meta name="keywords" content="RecyclerView 源码分析">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="版本: 25.1.0 Scroll调用顺序1234RecyclerView#requestChildFocus()-&amp;gt; RecyclerView#requestChildRectangleOnScreen()-&amp;gt; LayoutManager#requestChildRectangleOnScreen()-&amp;gt; RecyclerView#smoothScrollBy(int, int">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView 源码分析">
+<meta property="og:url" content="http://yoursite.com/android/recyclerview/index.html">
+<meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="版本: 25.1.0 Scroll调用顺序1234RecyclerView#requestChildFocus()-&amp;gt; RecyclerView#requestChildRectangleOnScreen()-&amp;gt; LayoutManager#requestChildRectangleOnScreen()-&amp;gt; RecyclerView#smoothScrollBy(int, int">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-03T12:38:10.302Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RecyclerView 源码分析">
+<meta name="twitter:description" content="版本: 25.1.0 Scroll调用顺序1234RecyclerView#requestChildFocus()-&amp;gt; RecyclerView#requestChildRectangleOnScreen()-&amp;gt; LayoutManager#requestChildRectangleOnScreen()-&amp;gt; RecyclerView#smoothScrollBy(int, int">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="wangmuy 的技术博客" type="application/atom+xml">
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+</head>
+</html>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">wangmuy 的技术博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            android
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file active"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            libgdx
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            misc
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/misc/duilib使用/">duilib使用小结</a></li>  <li class="file"><a href="/misc/plantuml基础/">PlantUML 基础</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            nodejs
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            博客搭建
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/博客搭建/octopress-setup/">用Octopress在GitHub上搭建博客</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-android/recyclerview" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/recyclerview/">
+            <time datetime="2014-07-26T09:23:01.000Z" itemprop="datePublished">2014-07-26</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/recyclerview.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/recyclerview.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/recyclerview.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            RecyclerView 源码分析
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <p>版本: 25.1.0</p>
+<h1 id="Scroll"><a href="#Scroll" class="headerlink" title="Scroll"></a>Scroll</h1><h1 id="调用顺序"><a href="#调用顺序" class="headerlink" title="调用顺序"></a>调用顺序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RecyclerView#requestChildFocus()</span><br><span class="line">-&gt; RecyclerView#requestChildRectangleOnScreen()</span><br><span class="line">-&gt; LayoutManager#requestChildRectangleOnScreen()</span><br><span class="line">-&gt; RecyclerView#smoothScrollBy(int, int)</span><br></pre></td></tr></table></figure>
+<h1 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h1><h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addOnScrollListener/removeOnScrollListener (OnScrollListener)</span><br></pre></td></tr></table></figure>
+<h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><h3 id="ScrollListener-onScrolled"><a href="#ScrollListener-onScrolled" class="headerlink" title="ScrollListener.onScrolled()"></a>ScrollListener.onScrolled()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;- RecyclerView.dispatchOnScrolled()</span><br><span class="line">1. &lt;- RecyclerView.scrollByInternal()</span><br><span class="line">  1.1 &lt;- scrollBy(x, y)</span><br><span class="line">    1.1.1 &lt;- RV.LayoutManager.requestChildRectangleOnScreen() &#123; dx!=0 || dy!=0 &#125;</span><br><span class="line">    1.1.2 &lt;- RV.LayoutManager.performAccessibilityAction() &#123; vScroll != 0 || hScroll != 0 &#125;</span><br><span class="line">  1.2 &lt;- RV.onTouchEvent() ACTION_MOVE 触摸移动</span><br><span class="line">  1.3 &lt;- RV.onGenericMotionEvent() SOURCE_CLASS_POINTER ACTION_SCROLL 鼠标滚轮</span><br><span class="line">2. &lt;- RecyclerView.dispatchLayoutStep3() &#123; dispatchOnScrolled(0,0) &#125; layout引起的 item range changed</span><br><span class="line">3. &lt;- RV.ViewFlinger.run() &#123;</span><br><span class="line">  hresult=LayoutManager.scrollHorizontallyBy(); 线性布局 会调到 LinearLayoutManager.scrollBy()</span><br><span class="line">  vresult=LayoutManager.scrollVeriticallyBy();</span><br><span class="line">  (hresult != 0 || vresult != 0) dispatchOnScrolled() &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="RV-smoothScrollBy"><a href="#RV-smoothScrollBy" class="headerlink" title="RV.smoothScrollBy()"></a>RV.smoothScrollBy()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-&gt; RV.ViewFlinger.smoothScrollBy()</span><br></pre></td></tr></table></figure>
+<h3 id="RV-scrollToPosition"><a href="#RV-scrollToPosition" class="headerlink" title="RV.scrollToPosition()"></a>RV.scrollToPosition()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-&gt; LayoutManager.scrollToPosition()</span><br></pre></td></tr></table></figure>
+<h1 id="onBindViewHolder"><a href="#onBindViewHolder" class="headerlink" title="onBindViewHolder()"></a>onBindViewHolder()</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">RV.Adapter.onBindViewHolder(holder, position)</span><br><span class="line">1. &lt;- RV.Adapter.onBindViewHolder(holder, position, payloads)</span><br><span class="line">2. &lt;- RV.Adapter.bindViewHolder(holder, position)</span><br><span class="line">  &lt;- RV.Recycler.tryBindViewHolderByDeadline() 前提: 判断 RecyclerPool.willBindInTime()</span><br><span class="line">  2.1 &lt;- RV.Recycler.bindViewToPosition()</span><br><span class="line">  2.2 &lt;- RV.Recycler.tryGetViewHolderForPositionByDeadline()</span><br><span class="line">    &lt;- RV.Recycler.getViewForPosition()</span><br><span class="line">    2.2.1 &lt;- LayoutState.next()</span><br><span class="line">    2.2.2 &lt;- LinearLayoutManager.next()</span><br><span class="line">      &lt;- LLM.layoutChunk()</span><br><span class="line">      &lt;- LLM.fill()</span><br><span class="line">      2.2.2.1 &lt;- LLM.onLayoutChildren()</span><br><span class="line">        2.2.2.1.1 &lt;- RV.dispatchLayoutStep2()</span><br><span class="line">          &lt;- 2.2.2.1.1.1 RV.dispatchLayout()</span><br><span class="line">            &lt;- RV.onLayout() # 一般调用位置</span><br><span class="line">          &lt;- 2.2.2.1.1.2 RV.onMeasure() 只在 LayoutManager.setAutoMeasureEnabled(true)</span><br><span class="line">        2.2.2.1.2 &lt;- RV.dispatchLayoutStep1()</span><br><span class="line">      2.2.2.2 &lt;- LLM.layoutForPredictiveAnimations()</span><br><span class="line">      2.2.2.3 &lt;- LLM.scrollBy()</span><br><span class="line">      2.2.2.4 &lt;- LLM.onFocusSearchFailed()</span><br></pre></td></tr></table></figure>
+<p>版本: 23.0.1</p>
+<h1 id="从notifyDatasetChanged-到实际的view被重新添加和layout"><a href="#从notifyDatasetChanged-到实际的view被重新添加和layout" class="headerlink" title="从notifyDatasetChanged() 到实际的view被重新添加和layout"></a>从notifyDatasetChanged() 到实际的view被重新添加和layout</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">问题:</span><br><span class="line">什么时候加进动画?</span><br><span class="line">Adapter.notifyDataSetChanged() &#123; (AdapterDataObservable mObservable).notifyChanged() &#125; 每个 Observable.onChanged()</span><br><span class="line">-&gt; RecyclerViewDataObserver.onChanged() &#123;</span><br><span class="line">    setDataSetChangedAfterLayout() 每个没有shouldIgnore的viewHolder(现有的和mRecycler的) 添加 FLAG_ADAPTER_POSITION_UNKNOWN</span><br><span class="line">    if(没有pendingUpdates) requestLayout()</span><br><span class="line">--UI Handler下一次处理--&gt; RV.onLayout() -...-&gt; onBindViewHolder()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="notifyItemRemoved-pos-到实际的view被删除和重新layout"><a href="#notifyItemRemoved-pos-到实际的view被删除和重新layout" class="headerlink" title="notifyItemRemoved(pos) 到实际的view被删除和重新layout"></a>notifyItemRemoved(pos) 到实际的view被删除和重新layout</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">Adapter.notifyItemRemoved(pos) &#123; mObservable.notifyItemRangeRemoved(pos,1) &#125; 每个 Oberservable.onItemRangeRemoved()</span><br><span class="line">-&gt; RecyclerViewDataObserver.onItemRangeRemoved() &#123;</span><br><span class="line">  AdapterHelper.onItemRangeRemoved()一般==true: 加到AdapterHelper.mPendingUpdates数组</span><br><span class="line">    triggerUpdateProcessor() &#125;</span><br><span class="line">-&gt; RecyclerViewDataObserver.triggerUpdateProcessor() &#123; 一般mHasFixedSize==false: mAdapterUpdateDuringMeasure=true; requestLayout() &#125;</span><br><span class="line"></span><br><span class="line">--UI Handler下一次处理--&gt; RV.onMeasure() &#123;</span><br><span class="line">  mAdapterUpdateDuringMeasure==true: ... processAdapterUpdatesAndSetAnimationFlags(); ... mLayout.onMeasure() &#125;</span><br><span class="line">  -&gt; RV.processAdapterUpdatesAndSetAnimationFlags() &#123;</span><br><span class="line">  ... mItemAnimator != null &amp;&amp; mLayout.supportsPredictiveItemAnimations(): mAdapterHelper.preProcess(); .. &#125;</span><br><span class="line">    -&gt; AdapterHelper.preProcess()</span><br><span class="line">      -&gt; AdapterHelper.applyRemove(op) &#123; type==POSITION_TYPE_NEW_OR_LAID_OUT: postponeAndUpdateViewHolders(op) &#125;</span><br><span class="line">      -&gt; AdapterHelper.postponeAndUpdateViewHolders(op) &#123; 加到mPostponedList; (RV内部匿名实例 mCallback).offsetPositionsForRemovingLaidOutOrNewView() &#125;</span><br><span class="line">      -&gt; RV.offsetPositionRecordsForRemove(posStart, count, false); RV.mItemsAddedOrRemoved=true</span><br><span class="line">      -&gt; &#123; holder.flagRemovedAndOffsetPosition(); mRecycler.offsetPositionRecordsForRemove(); requestLayout() &#125;</span><br><span class="line">      -&gt; Recycler.offsetPositionRecordsForRemove()</span><br><span class="line">      -&gt; Recycler.recycleCachedViewAt(idx) &#123; addViewHolderToRecycledViewPool(); mCachedViews.remove(idx) &#125;</span><br><span class="line">    -&gt; 设置 animationTypeSupported=true; 设置 mState.mRunSimpleAnimations=true; mState.mRunPredictiveanimations=true</span><br><span class="line">  -&gt; RV.onLayout()</span><br><span class="line">  -&gt; RV.dispatchLayout() &#123;</span><br><span class="line">    processAdapterUpdatesAndSetAnimationFlags(); ...</span><br><span class="line">    mLayout.onLayoutChildren(); 可能修改 mState.mRunSimpleAnimations</span><br><span class="line">    if(mState.mRunSimpleAnimations) &#123; ...</span><br><span class="line">      animateDisappearance(disappearingItem) 每个disappearing and removed item</span><br><span class="line">      animateAppearance(itemHolder) 每个appearing and added item</span><br><span class="line">      animateMove(postHolder) 每个persistent item</span><br><span class="line">      animateChange(oldHolder) 每个changing item</span><br><span class="line">    &#125;</span><br><span class="line">  -&gt; RV.animateDisappearance(holder) &#123;</span><br><span class="line">    addAnimatingView(holder)</span><br><span class="line">    if(没有真的移除) mItemAnimator.animateMove()==true: postAnimationRunner()</span><br><span class="line">    else(真的移除) holder.setIsRecyclable(fasle); mItemAnimator.animateRemove()加到mPendingRemovals==true: postAnimationRunner()</span><br><span class="line">    &#125;</span><br><span class="line">    -&gt; addAnimatingView() &#123; mRecycler.unscrapView(holder); 一般 mChildHelper.hide(view) &#125;</span><br><span class="line">      -&gt; ChildHelper.hide() -&gt; ChildHelper.hideInternal(view) &#123; 加到 mHiddenViews &#125;</span><br><span class="line">    -&gt; postAnimationRunner() &#123; 动画runnable post到choreographer上 &#125;</span><br><span class="line">  &#125;</span><br><span class="line">--choreographer下一帧--&gt; 执行动画 RV.mItemAnimatorRunner</span><br><span class="line">-&gt; DefaultItemAnimator.runPendingAnimations() &#123; animateRemoveImpl(每个removed的holder); ... &#125;</span><br><span class="line">-&gt; DefaultItemAnimator.animateRemoveImpl() &#123; view.animate().alpha(0).setDuration(默认120ms).start() &#125;</span><br><span class="line">--动画执行完--&gt; 动画回调 onAnimatinoEnd() &#123; view.setalpha(1); dispatchRemoveFinished(holder); dispatchFinishedWhenDone() &#125;</span><br><span class="line">  -&gt; (DefaultItemAnimator 父类 ItemAnimator).dispatchRemoveFinished() &#123; mListener.onRemoveFinished() &#125;</span><br><span class="line">  -&gt; RV.(ItemAnimatorRestoreListener mItemAnimatorListener).onRemoveFinished() &#123;</span><br><span class="line">    item.setIsRecyclable(true); removeAnimatingView(view) 或 removeDetachedView(view) &#125;</span><br><span class="line">    -&gt; RV.removeAnimatingView(view) &#123;</span><br><span class="line">      mChildHelper.removeViewIfHidden(view);</span><br><span class="line">      if(removed): mRecycler.unscrapView(); mRecycler.recycleViewHolderInternal() &#125;</span><br><span class="line">      -&gt; ChildHelper.removeViewifHidden() &#123;</span><br><span class="line">        从mBucket移除; unhideViewInternal(view); (mCallback==RV匿名).removeViewAt(idx) 真正从RV移除 &#125;</span><br><span class="line">        -&gt; ChildHelper.unhideViewInternal() &#123; 从 mHiddenViews 移除 &#125;</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/libgdx/skin-load/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    LibGDX skin load 源码分析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/android/startup-routines/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Android 启动流程 源码分析</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Wangmuy &copy; 2019 
+            <a rel="external nofollow noopener noreferrer" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten" rel="external nofollow noopener noreferrer" target="_blank">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>

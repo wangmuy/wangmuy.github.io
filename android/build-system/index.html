@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    
+    <title>Android 构建系统 源码分析 | wangmuy 的技术博客</title>
+    
+    
+        <meta name="keywords" content="Android 构建系统 源码分析">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="版本 aosp-5.1.1_r6build/envsetup.sh作用:  找 vendorsetup.sh (收集 lunch combo) 设置编译 JAVA_HOME 设置其他shell参数 TARGET_PRODUCT 不包括 TARGET_DEVICE(在product_config.mk定义) TARGET_BUILD_VARIANT TARGET_BUILD_TYPE TARGET_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 构建系统 源码分析">
+<meta property="og:url" content="http://yoursite.com/android/build-system/index.html">
+<meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="版本 aosp-5.1.1_r6build/envsetup.sh作用:  找 vendorsetup.sh (收集 lunch combo) 设置编译 JAVA_HOME 设置其他shell参数 TARGET_PRODUCT 不包括 TARGET_DEVICE(在product_config.mk定义) TARGET_BUILD_VARIANT TARGET_BUILD_TYPE TARGET_">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-03T12:51:57.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 构建系统 源码分析">
+<meta name="twitter:description" content="版本 aosp-5.1.1_r6build/envsetup.sh作用:  找 vendorsetup.sh (收集 lunch combo) 设置编译 JAVA_HOME 设置其他shell参数 TARGET_PRODUCT 不包括 TARGET_DEVICE(在product_config.mk定义) TARGET_BUILD_VARIANT TARGET_BUILD_TYPE TARGET_">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="wangmuy 的技术博客" type="application/atom+xml">
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+</head>
+</html>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">wangmuy 的技术博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            android
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file active"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            libgdx
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            misc
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/misc/duilib使用/">duilib使用小结</a></li>  <li class="file"><a href="/misc/plantuml基础/">PlantUML 基础</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            nodejs
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            博客搭建
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/博客搭建/octopress-setup/">用Octopress在GitHub上搭建博客</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-android/build-system" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/build-system/">
+            <time datetime="2016-07-02T01:10:10.000Z" itemprop="datePublished">2016-07-02</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/build-system.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/build-system.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/build-system.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Android 构建系统 源码分析
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="版本-aosp-5-1-1-r6"><a href="#版本-aosp-5-1-1-r6" class="headerlink" title="版本 aosp-5.1.1_r6"></a>版本 aosp-5.1.1_r6</h1><h1 id="build-envsetup-sh"><a href="#build-envsetup-sh" class="headerlink" title="build/envsetup.sh"></a>build/envsetup.sh</h1><p>作用:</p>
+<ul>
+<li>找 vendorsetup.sh (收集 lunch combo)</li>
+<li>设置编译 JAVA_HOME</li>
+<li>设置其他shell参数<ul>
+<li>TARGET_PRODUCT</li>
+<li>不包括 TARGET_DEVICE(在product_config.mk定义)</li>
+<li>TARGET_BUILD_VARIANT</li>
+<li>TARGET_BUILD_TYPE</li>
+<li>TARGET_BUILD_APPS</li>
+</ul>
+</li>
+<li>定义快捷命令<ul>
+<li>lunch</li>
+<li>croot</li>
+<li>m</li>
+<li>mm</li>
+<li>mmm</li>
+<li>mma</li>
+<li>mmma</li>
+<li>mgrep</li>
+<li>jgrep</li>
+<li>sgrep</li>
+<li>resgrep</li>
+<li>godir</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">找device和vendor目录下的vendorsetup.sh 并 source</span><br><span class="line">addcompletions() 找 sdk/bash_completion 下 [a-z]*.bash 并 source</span><br><span class="line">  function gettop&#123;&#125; 返回aosp编译根目录</span><br><span class="line">  </span><br><span class="line">  function lunch&#123;&#125;</span><br><span class="line">    TARGET_PRODUCT=$product</span><br><span class="line">    TARGET_BUILD_VARIANT=$variant</span><br><span class="line">    TARGET_BUILD_TYPE=release</span><br><span class="line">    aosp_strawberry-userdebug 其中 product==aosp_strawberry, variant==userdebug</span><br><span class="line"></span><br><span class="line">设置shell变量, 如 $ANDROID_BUILD_TOP</span><br></pre></td></tr></table></figure>
+<h1 id="调用关系-按先后顺序"><a href="#调用关系-按先后顺序" class="headerlink" title="调用关系(按先后顺序)"></a>调用关系(按先后顺序)</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">AndroidProducts.mk</span><br><span class="line">&lt;- build/core/product_config.mk 通过 $(get-all-product-makefils) 查找device,vendor下AndroidProducts.mk, 导入 all_product_configs</span><br><span class="line"></span><br><span class="line">BoardConfig.mk</span><br><span class="line">&lt;- build/core/envsetup.mk 通过查找 device,vendor 下 $(TARGET_DEVICE)/BoardConfig.mk 包含进来, 设置到 board_config_mk</span><br><span class="line">  &lt;- TARGET_DEVICE 在 envsetup.mk 定义 TARGET_DEVICE := $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_DEVICE)</span><br><span class="line">  &lt;- INTERNAL_PRODUCT 在 product_config.mk 定义 INTERNAL_PRODUCT := $(call resolve-short-product-name, $(TARGET_PRODUCT))</span><br><span class="line">  &lt;- PRODUCT_DEVICE 由不同的 device 位置下定义</span><br><span class="line"></span><br><span class="line">AndroidBoard.mk</span><br><span class="line">&lt;- build/target/board/Android.mk -include $(TARGET_DEVICE_DIR)/AndroidBoard.mk</span><br><span class="line">&lt;- TARGET_DEVICE_DIR 在 build/core/envsetup.mk 定义 TARGET_DEVICE_DIR := $(patsubst %/,%,$(dir $(board_config_mk)))</span><br></pre></td></tr></table></figure>
+<h1 id="包含关系"><a href="#包含关系" class="headerlink" title="包含关系"></a>包含关系</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ANDROID_BUILD_TOP/Makefile</span><br><span class="line">-&gt; build/core/main.mk 定义 TOPDIR 为空, BUILD_SYSTEM := $(TOPDIR)build/core</span><br><span class="line">  -&gt; $(BUILD_SYSTEM)/help.mk</span><br><span class="line">  -&gt; $(BUILD_SYSTEM)/config.mk( 定义 BUILD_XXX 对应的各个mk, 供以后include )</span><br><span class="line">    -&gt; $(BUILD_SYSTEM)/envsetup.mk ( 定义 PRODUCT_OUT )</span><br><span class="line">      -&gt; $(BUILD_SYSTEM)/product_config.mk</span><br><span class="line">        -&gt; $(BUILD_SYSTEM)/node_fns.mk</span><br><span class="line">        -&gt; $(BUILD_SYSTEM)/product.mk</span><br><span class="line">        -&gt; $(BUILD_SYSTEM)/device.mk</span><br><span class="line">        -&gt; $(TARGET_PRODUCT)(来自envsetup.sh) 的 AndroidProducts.mk &#123;</span><br><span class="line">          call product.mk:import-products</span><br><span class="line">            -&gt; node_fns.mk:import-nodes(间接定义 PRODUCTS==目标mk文件列表, 同时PRODUCTS本身也用作一个前缀)</span><br><span class="line">            -&gt; _import-nodes-inner -&gt; import-node -&gt; include</span><br><span class="line">          定义 INTERNAL_PRODUCT== $(TARGET_PRODUCT)扩展出来的目标mk文件</span><br><span class="line">          &#125;</span><br><span class="line">  -&gt; $(BUILD_SYSTEM)/cleanbuild.mk</span><br><span class="line">  -&gt; $(BUILD_SYSTEM)/definitions.mk</span><br><span class="line">  -&gt; $(BUILD_SYSTEM)/dex_preopt.mk</span><br><span class="line">  -&gt; build/core/pdk_config.mk</span><br></pre></td></tr></table></figure>
+<h1 id="recovery"><a href="#recovery" class="headerlink" title="recovery"></a>recovery</h1><ul>
+<li>build/core/Makefile</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">公共资源路径</span><br><span class="line">recovery_resources_common := $(call include-path-for, recovery)/res</span><br><span class="line">include-path-for 定义在 pathmap.mk 中 pathmap_INCL</span><br><span class="line">默认 recovery_resources_common := $(recovery_resources_common)-xhdpi</span><br><span class="line"></span><br><span class="line">私有资源路径</span><br><span class="line">recovery_resources_private := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery/res))</span><br><span class="line"></span><br><span class="line">编译依赖</span><br><span class="line">recovery_resource_deps := $(shell find $(recovery_resources_common) $(recovery_resources_private) -type f)</span><br><span class="line"></span><br><span class="line">拷贝 recovery 资源</span><br><span class="line">$(INSTALLED_RECOVERY_IMAGE_TARGET): $(recovery_binary)... 等</span><br><span class="line">        cp -rf $(recovery_resources_common)/* $(TARGET_RECOVERY_ROOT_OUT)/res</span><br><span class="line">        $(foreach item,$(recovery_resouces_private), cp -rf $(item) $(TARGET_RECOVERY_ROOT_OUT)/)</span><br></pre></td></tr></table></figure>
+<h1 id="apicheck"><a href="#apicheck" class="headerlink" title="apicheck"></a>apicheck</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apicheck.mk &#123; .PHONY checkapi; droidcore: checkapi &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Add-on"><a href="#Add-on" class="headerlink" title="Add-on"></a>Add-on</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">主mk: device/sample/products/sample_addon.mk</span><br><span class="line">&lt;- device/sample/products/AndroidProducts.mk</span><br><span class="line">&lt;- build/core/product.mk</span><br><span class="line">  function  _find-android-products-files</span><br><span class="line">  查找 device, vendor, $(SRC_TARGET_DIR)/product 目录下所有 AndroidProducts.mk</span><br><span class="line">  &lt;- function get-all-product-makefiles</span><br><span class="line">     返回排序好的所有 AndroidProducts.mk 定义的 PRODUCT_MAKEFILES</span><br><span class="line">    &lt;- build/core/product_config.mk</span><br><span class="line">       all_product_configs 从中找到对应 product 的 makefile</span><br><span class="line">       all_product_makefiles 集合所有product的makefile</span><br><span class="line">       call import-products 导入product的makefile</span><br></pre></td></tr></table></figure>
+<p>例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">device/sample/products/AndroidProducts.mk</span><br><span class="line">PRODUCT_MAKEFILES := $(LOCAL_DIR)/sample_addon.mk</span><br><span class="line">PRODUCT_PACKAGES := PlatformLibraryClient \</span><br><span class="line">	com.example.android.platform_library \</span><br><span class="line">	libplatform_library_jni</span><br><span class="line"></span><br><span class="line">依赖 com.example.android.platform_library 来自</span><br><span class="line">device/sample/frameworks/PlatformLibrary/Android.mk</span><br><span class="line">&lt;- device/sample/frameworks/Android.mk 引入所有子目录mk</span><br><span class="line">&lt;- device/sample/Android.mk 引入所有子目录mk</span><br></pre></td></tr></table></figure>
+<p>使用到的主mk: build/core/tasks/sdk-addon.mk</p>
+<ol>
+<li>MODULES 由 fils_to_copy 拷贝到 dest</li>
+<li>COPY_FILES 由 files_to_copy 拷贝到 dest</li>
+<li>TARGET_CPU_API对应的img 拷贝到 $(addon_dir_img)</li>
+<li>修改 TARGET_CPU_API对应的 source.properties, 拷贝到 $(addon_dir_img)</li>
+<li>doc_module 拷贝到 $(OUT_DOCS)</li>
+<li>sdk打包, image打包</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function module-installed-files 查找某个module在out目录安装位置</span><br></pre></td></tr></table></figure>
+<h1 id="Overlay"><a href="#Overlay" class="headerlink" title="Overlay"></a>Overlay</h1><p>TODO</p>
+<h1 id="Jack"><a href="#Jack" class="headerlink" title="Jack"></a>Jack</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java-to-jack(definitions.mk)</span><br><span class="line">&lt;- LOCAL_IS_STATIC_JAVA_LIBRARY 构建static javalib 时候 $(full_classes_jack)的命令 (static_java_library.mk)</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/misc/duilib使用/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    duilib使用小结
+                
+            </div>
+        </a>
+    
+    
+        <a href="/libgdx/dynamic-freetype/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">LibGDX 实现 动态中文/freetype 加载</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Wangmuy &copy; 2019 
+            <a rel="external nofollow noopener noreferrer" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten" rel="external nofollow noopener noreferrer" target="_blank">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>

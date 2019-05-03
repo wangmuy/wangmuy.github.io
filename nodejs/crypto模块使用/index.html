@@ -3,20 +3,23 @@
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
     
-    <title>Tags | wangmuy 的技术博客</title>
+    <title>Node.js Crypto模块 使用示例 | wangmuy 的技术博客</title>
     
     
-        <meta name="keywords" content="Tags">
+        <meta name="keywords" content="Node.js Crypto模块 使用示例">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Tags">
-<meta property="og:url" content="http://yoursite.com/tags/index.html">
+    <meta name="description" content="目录 {:toc}  Node版本: v0.10.20 (API Stability: 2 - Unstable) 1公钥私钥的签名和验证用 ssh 的公私钥做例子。 ssh-keygen 可以生成不同种类和长度的公私钥对。 查看 ssh key 的种类和长度 3 : 1ssh-keygen -l -f id_rsa.pub  # 假设输出长度是 1024 , 种类是 RSA 将 ssh格式 的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js Crypto模块 使用示例">
+<meta property="og:url" content="http://yoursite.com/nodejs/crypto模块使用/index.html">
 <meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="目录 {:toc}  Node版本: v0.10.20 (API Stability: 2 - Unstable) 1公钥私钥的签名和验证用 ssh 的公私钥做例子。 ssh-keygen 可以生成不同种类和长度的公私钥对。 查看 ssh key 的种类和长度 3 : 1ssh-keygen -l -f id_rsa.pub  # 假设输出长度是 1024 , 种类是 RSA 将 ssh格式 的">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-02T14:43:32.224Z">
+<meta property="og:updated_time" content="2019-05-03T12:32:08.680Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tags">
+<meta name="twitter:title" content="Node.js Crypto模块 使用示例">
+<meta name="twitter:description" content="目录 {:toc}  Node版本: v0.10.20 (API Stability: 2 - Unstable) 1公钥私钥的签名和验证用 ssh 的公私钥做例子。 ssh-keygen 可以生成不同种类和长度的公私钥对。 查看 ssh key 的种类和长度 3 : 1ssh-keygen -l -f id_rsa.pub  # 假设输出长度是 1024 , 种类是 RSA 将 ssh格式 的">
     
 
     
@@ -184,13 +187,13 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/misc/duilib使用/">duilib使用小结</a></li>  <li class="file"><a href="/misc/plantuml基础/">PlantUML 基础</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             nodejs
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -272,16 +275,120 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><section class="layout-wrap">
-    <div class="layout-title">
-        <span>Tags</span>
-    </div>
-    <div class="layout-wrap-inner tag-cloud">
+            <section id="main"><article id="post-nodejs/crypto模块使用" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
         
-            <a href="/tags/android/" style="font-size: 14px;">android</a> <a href="/tags/fresco/" style="font-size: 14px;">fresco</a>
         
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/nodejs/">nodejs</a>
     </div>
-</section></section>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/nodejs/crypto模块使用/">
+            <time datetime="2013-11-14T09:44:00.000Z" itemprop="datePublished">2013-11-14</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/nodejs/crypto模块使用.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/nodejs/crypto模块使用.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/nodejs/crypto模块使用.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Node.js Crypto模块 使用示例
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <ul>
+<li>目录
+{:toc}</li>
+</ul>
+<h1 id="Node版本-v0-10-20-API-Stability-2-Unstable-1"><a href="#Node版本-v0-10-20-API-Stability-2-Unstable-1" class="headerlink" title="Node版本: v0.10.20 (API Stability: 2 - Unstable) 1"></a>Node版本: v0.10.20 (API Stability: 2 - Unstable) <sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></h1><h1 id="公钥私钥的签名和验证"><a href="#公钥私钥的签名和验证" class="headerlink" title="公钥私钥的签名和验证"></a>公钥私钥的签名和验证</h1><p>用 ssh 的公私钥做例子。
+<code>ssh-keygen</code> 可以生成不同种类和长度的公私钥对。</p>
+<p>查看 ssh key 的种类和长度 <sup id="fnref:3"><a href="#fn:3" rel="footnote">3</a></sup> :</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -l -f id_rsa.pub  # 假设输出长度是 1024 , 种类是 RSA</span><br></pre></td></tr></table></figure>
+<p>将 ssh格式 的公钥转换为 RFC4716/PKCS8/PEM 等格式 <sup id="fnref:4"><a href="#fn:4" rel="footnote">4</a></sup> ：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -f id_rsa.pub -e -m PEM  # 假设保存到 id_rsa.pub.pem</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 准备公私钥和数据</span></span><br><span class="line"><span class="keyword">var</span> privatekey = fs.readFileSync(<span class="string">'.ssh/id_rsa'</span>, <span class="string">'utf8'</span>);</span><br><span class="line"><span class="keyword">var</span> publickey = fs.readFileSync(<span class="string">'.ssh/id_rsa.pub.pem'</span>, <span class="string">'utf8'</span>);</span><br><span class="line"><span class="keyword">var</span> data = <span class="string">'www.youku.com'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用私钥签名</span></span><br><span class="line"><span class="keyword">var</span> signer = crypto.createSign(<span class="string">'RSA-SHA256'</span>);</span><br><span class="line">signer.update(data);</span><br><span class="line"><span class="keyword">var</span> signature = signer.sign(privatekey, <span class="string">'base64'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用公钥验证</span></span><br><span class="line"><span class="keyword">var</span> verifier = crypto.createVerify(<span class="string">'RSA-SHA256'</span>);</span><br><span class="line">verifier.update(data);</span><br><span class="line"><span class="keyword">var</span> isok = verifier.verify(publickey, signature, <span class="string">'base64'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(isok); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<h1 id="加密和解密2"><a href="#加密和解密2" class="headerlink" title="加密和解密2"></a>加密和解密<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup></h1><p>用 aes256 算法做例子, 输入字符串为utf-8编码, 加密输出base64编码串.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 准备密码和数据</span></span><br><span class="line"><span class="keyword">var</span> algo = <span class="string">'aes256'</span></span><br><span class="line"><span class="keyword">var</span> plain_format = <span class="string">'utf8'</span>;</span><br><span class="line"><span class="keyword">var</span> crypt_format = <span class="string">'base64'</span>;</span><br><span class="line"><span class="keyword">var</span> key = <span class="string">'123456'</span>;</span><br><span class="line"><span class="keyword">var</span> data = <span class="string">'secret string'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加密</span></span><br><span class="line"><span class="keyword">var</span> cipher = crypto.createCipher(algo, key);</span><br><span class="line"><span class="keyword">var</span> encrypted = cipher.update(data, plain_format, crypt_format);</span><br><span class="line">encrypted += cipher.final(crypt_format);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解密</span></span><br><span class="line"><span class="keyword">var</span> decipher = crypto.createDecipher(algo, key);</span><br><span class="line"><span class="keyword">var</span> decrypted = decipher.update(encrypted, crypt_format, plain_format);</span><br><span class="line">decrypted += decipher.final(plain_format);</span><br><span class="line"><span class="built_in">console</span>.log(decrypted); <span class="comment">// 'secret string'</span></span><br></pre></td></tr></table></figure>
+<hr>
+<div id="footnotes"><hr><div id="footnotelist"><ol style="list-style:none; padding-left: 0;"><li id="fn:1"><span style="display: inline-block; vertical-align: top; padding-right: 10px;">1.</span><span style="display: inline-block; vertical-align: top;"><a href="http://nodejs.org/api/crypto.html" rel="external nofollow noopener noreferrer" target="_blank">Node.js Manual &amp; Documentation</a></span><a href="#fnref:1" rev="footnote"> ↩</a></li><li id="fn:2"><span style="display: inline-block; vertical-align: top; padding-right: 10px;">2.</span><span style="display: inline-block; vertical-align: top;"><a href="http://stackoverflow.com/questions/6953286/node-js-encrypting-data-that-needs-to-be-decrypted" rel="external nofollow noopener noreferrer" target="_blank">StackOverflow</a></span><a href="#fnref:2" rev="footnote"> ↩</a></li><li id="fn:3"><span style="display: inline-block; vertical-align: top; padding-right: 10px;">3.</span><span style="display: inline-block; vertical-align: top;"><a href="http://prefetch.net/blog/index.php/2010/12/13/locating-the-ssh-key-type-and-key-size-from-a-public-key-file/" rel="external nofollow noopener noreferrer" target="_blank">prefetch.net</a></span><a href="#fnref:3" rev="footnote"> ↩</a></li><li id="fn:4"><span style="display: inline-block; vertical-align: top; padding-right: 10px;">4.</span><span style="display: inline-block; vertical-align: top;"><a href="http://unix.stackexchange.com/questions/26924/how-do-i-convert-a-ssh-keygen-public-key-into-a-format-that-openssl-pem-read-bio" rel="external nofollow noopener noreferrer" target="_blank">unix.stackexchange.com</a></span><a href="#fnref:4" rev="footnote"> ↩</a></li></ol></div></div>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/android/startup-routines/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Android 启动流程 源码分析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/android/window-system/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Android 窗口系统 源码分析</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
         </div>
         <footer id="footer">
     <div class="outer">

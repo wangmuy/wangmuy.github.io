@@ -3,20 +3,24 @@
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
     
-    <title>About | wangmuy 的技术博客</title>
+    <title>Fresco 源码分析 | wangmuy 的技术博客</title>
     
     
-        <meta name="keywords" content="About">
+        <meta name="keywords" content="android,fresco">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="About">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+    <meta name="description" content="SimpleDraweeView 显示流程1234SDV: SimpleDraweeViewPDCBuilder: PipelineDraweeControllerBuilderADCBuilder: AbstractDraweeControllerBuilderADController: AbstractDraweeController 设置1234567891011SDV.setImageUR">
+<meta name="keywords" content="android,fresco">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fresco 源码分析">
+<meta property="og:url" content="http://yoursite.com/android/fresco/index.html">
 <meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="SimpleDraweeView 显示流程1234SDV: SimpleDraweeViewPDCBuilder: PipelineDraweeControllerBuilderADCBuilder: AbstractDraweeControllerBuilderADController: AbstractDraweeController 设置1234567891011SDV.setImageUR">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-02T14:43:32.204Z">
+<meta property="og:updated_time" content="2019-05-03T12:58:00.981Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="About">
+<meta name="twitter:title" content="Fresco 源码分析">
+<meta name="twitter:description" content="SimpleDraweeView 显示流程1234SDV: SimpleDraweeViewPDCBuilder: PipelineDraweeControllerBuilderADCBuilder: AbstractDraweeControllerBuilderADController: AbstractDraweeController 设置1234567891011SDV.setImageUR">
     
 
     
@@ -157,13 +161,13 @@
         
         
          <ul class="unstyled" id="tree"> 
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             android
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file active"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -272,16 +276,55 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-android/fresco" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
             <header class="article-header">
                 
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/android/">android</a>, <a class="tag-link" href="/tags/fresco/">fresco</a>
+    </div>
+
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/fresco/">
+            <time datetime="2016-09-07T03:03:58.000Z" itemprop="datePublished">2016-09-07</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/fresco.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/fresco.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/fresco.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
                 
     
         <h1 class="article-title" itemprop="name">
-            About
+            Fresco 源码分析
         </h1>
     
 
@@ -294,7 +337,11 @@
             
         
         
-            
+            <h1 id="SimpleDraweeView-显示流程"><a href="#SimpleDraweeView-显示流程" class="headerlink" title="SimpleDraweeView 显示流程"></a>SimpleDraweeView 显示流程</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SDV: SimpleDraweeView</span><br><span class="line">PDCBuilder: PipelineDraweeControllerBuilder</span><br><span class="line">ADCBuilder: AbstractDraweeControllerBuilder</span><br><span class="line">ADController: AbstractDraweeController</span><br></pre></td></tr></table></figure>
+<h2 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SDV.setImageURI() &#123;</span><br><span class="line">  controller = PDCBuilder.setUri(uri).setOldController(getController()).build()</span><br><span class="line">  setController(controller)</span><br><span class="line">&#125;</span><br><span class="line">-&gt; (PDCBuilder 父类 ADCBuilder).buildController()</span><br><span class="line">  -&gt; PDCBuilder.obtainController() &#123; 清空现在的listeners &#125;</span><br><span class="line">  -&gt; ADCBuilder.maybeAttachListeners(controller) &#123;</span><br><span class="line">    只剩 ADCBuilder.mBoundControllerListeners, 此成员在 ADCBuilder ctor中赋值为null</span><br><span class="line">    &#125;</span><br><span class="line">-&gt; (SDV 父类 DraweeView).setController()</span><br><span class="line">  -&gt; DraweeHolder.setController()</span><br></pre></td></tr></table></figure>
+<h2 id="触发"><a href="#触发" class="headerlink" title="触发"></a>触发</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">在 WindowManger系统 SDV.onAttach() 时</span><br><span class="line">(SDV 父类 DraweeView).onAttach()</span><br><span class="line">-&gt; DraweeView.doAttach()</span><br><span class="line">  -&gt; DraweeHolder.onAttach()</span><br><span class="line">    -&gt; DraweeHolder.attachOrDetachController()</span><br><span class="line">      -&gt; DraweeHolder.attachController()</span><br><span class="line">        -&gt; AbstractDraweeController.onAttach()</span><br><span class="line">          -&gt; ADController.submitRequest() &#123;</span><br><span class="line">            若cache到, 直接调用 onNewResultInternal();</span><br><span class="line">            若无cache, mDataSource.subscribe(DataSubscriber), 在 onNewResultImpl()调用 onNewResultInternal() 或 onFailureInternal() &#125;</span><br><span class="line">-回调-&gt; ADController.onNewResultInternal() &#123;</span><br><span class="line">  mSettableDraweeHierarchy.setImage(drawable..)</span><br><span class="line">  isFinished: &#123; getControllerListener().onFinalImageSet() &#125;</span><br><span class="line">  否则: &#123; getControllerListener().onIntermediateImageSet() &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="获取"><a href="#获取" class="headerlink" title="获取"></a>获取</h2><h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Fresco.initialize()</span><br><span class="line">-&gt; ImagePipelineFactory.initialize(ImagePipelineConfig) &#123; new ImagePipelineFactory() &#125;</span><br><span class="line">  -&gt; ImagePipelineFactory.ctor() &#123; mThreadHandoffProducerQueue = DefaultExecutorSupplier.mLightWeightBackgroundExecutor &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="提交到线程"><a href="#提交到线程" class="headerlink" title="提交到线程"></a>提交到线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">(父类 ADController).submitRequest()</span><br><span class="line">-&gt; PipelineDraweeController.getDataSource()</span><br><span class="line">  -&gt; PDCBuilder.getDataSourceForRequest()</span><br><span class="line">    -&gt; ImagePipeline.fetchDecodedImage()</span><br><span class="line">      -&gt; ImagePipeline.submitFetchRequest() &#123; ClosableProducerToDataSourceAdapter.create() &#125;</span><br><span class="line">        -&gt; (ClosableProducerToDataSourceAdapter 父类 AbstractProducerToDataSourceAdapter).ctor()</span><br><span class="line">          -&gt; BitmapMemoryCacheGetProducer.produceResults()</span><br><span class="line">            -&gt; ThreadHandoffProducer.produceResults()</span><br><span class="line">              -&gt; ThreadHandoffProducerQueue.addToQueueOrExecute() &#123; mExecutor.execute() &#125;</span><br><span class="line">                -executor线程-&gt; StatefulProducerRunnable ThreadHandoffProducer.statefulRunnable.onSuccess()</span><br><span class="line">                  -&gt; (BitmapMemoryCacheKeyMultiplexProducer 父类 MultiplexProducer).produceResults()</span><br><span class="line">                    -&gt; MultiplexProducer.startInputProducerIfHasAttachedConsumers()</span><br><span class="line">                      -&gt; BitmapMemoryCacheProducer.produceResults()</span><br><span class="line">                        -&gt; DecodeProducer.produceResults()</span><br><span class="line">                          -&gt; LocalImageProgressiveDecoder.ctor()</span><br><span class="line">                            -&gt; 父类 ProgressiveDecoder.ctor() &#123; JobRunnable 此job被执行时 doDecode() &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">AbstractDataSource.subscribe() &#123;</span><br><span class="line">  mDataSourceStatus在ctor赋初始值 IN_PROGRESS:</span><br><span class="line">    mSubscribers.add(Pair(dataSubscriber, ADController.mUiThreadImmediateExecutor))</span><br><span class="line">  shouldNotify==false: 忽略 &#125;</span><br><span class="line"></span><br><span class="line">JobScheduler</span><br></pre></td></tr></table></figure>
             </div>
         
         <footer class="article-footer">
@@ -304,6 +351,25 @@
 
 
     
+<nav id="article-nav">
+    
+        <a href="/misc/plantuml基础/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    PlantUML 基础
+                
+            </div>
+        </a>
+    
+    
+        <a href="/misc/duilib使用/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">duilib使用小结</div>
+        </a>
+    
+</nav>
+
 
 
 

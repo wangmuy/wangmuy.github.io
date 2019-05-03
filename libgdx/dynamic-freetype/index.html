@@ -3,20 +3,23 @@
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
     
-    <title>Tags | wangmuy 的技术博客</title>
+    <title>LibGDX 实现 动态中文/freetype 加载 | wangmuy 的技术博客</title>
     
     
-        <meta name="keywords" content="Tags">
+        <meta name="keywords" content="LibGDX 实现 动态中文/freetype 加载">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Tags">
-<meta property="og:url" content="http://yoursite.com/tags/index.html">
+    <meta name="description" content="123451. JSON读取Skin.getJsonLoader() -&amp;gt; new Json() -&amp;gt; json.setSerializer()  读json文件size属性, new FreeTypeBitmapFontStub()  FreeTypeBitmapFontStub extends BitmapFont  FreeTypeBitmapFontStub.data inst">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LibGDX 实现 动态中文&#x2F;freetype 加载">
+<meta property="og:url" content="http://yoursite.com/libgdx/dynamic-freetype/index.html">
 <meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="123451. JSON读取Skin.getJsonLoader() -&amp;gt; new Json() -&amp;gt; json.setSerializer()  读json文件size属性, new FreeTypeBitmapFontStub()  FreeTypeBitmapFontStub extends BitmapFont  FreeTypeBitmapFontStub.data inst">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-02T14:43:32.224Z">
+<meta property="og:updated_time" content="2019-05-03T12:45:15.684Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tags">
+<meta name="twitter:title" content="LibGDX 实现 动态中文&#x2F;freetype 加载">
+<meta name="twitter:description" content="123451. JSON读取Skin.getJsonLoader() -&amp;gt; new Json() -&amp;gt; json.setSerializer()  读json文件size属性, new FreeTypeBitmapFontStub()  FreeTypeBitmapFontStub extends BitmapFont  FreeTypeBitmapFontStub.data inst">
     
 
     
@@ -166,13 +169,13 @@
                          <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
                     </li> 
                     
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             libgdx
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file active"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -272,16 +275,109 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><section class="layout-wrap">
-    <div class="layout-title">
-        <span>Tags</span>
-    </div>
-    <div class="layout-wrap-inner tag-cloud">
+            <section id="main"><article id="post-libgdx/dynamic-freetype" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
         
-            <a href="/tags/android/" style="font-size: 14px;">android</a> <a href="/tags/fresco/" style="font-size: 14px;">fresco</a>
         
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/libgdx/">libgdx</a>
     </div>
-</section></section>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/libgdx/dynamic-freetype/">
+            <time datetime="2015-01-19T06:01:02.000Z" itemprop="datePublished">2015-01-19</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/libgdx/dynamic-freetype.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/libgdx/dynamic-freetype.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/libgdx/dynamic-freetype.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            LibGDX 实现 动态中文/freetype 加载
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. JSON读取</span><br><span class="line">Skin.getJsonLoader() -&gt; new Json() -&gt; json.setSerializer()</span><br><span class="line">  读json文件size属性, new FreeTypeBitmapFontStub()</span><br><span class="line">  FreeTypeBitmapFontStub extends BitmapFont</span><br><span class="line">  FreeTypeBitmapFontStub.data instanceof FreeTypeBitmapFontData</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2. Label初始化</span><br><span class="line">new Label() -&gt; Label.setStyle() &#123;</span><br><span class="line">  FreeTypeFontManager.isFreeTypeFont(style.font)==true &#123;</span><br><span class="line">    data.setSize(style.fontSize)</span><br><span class="line">    new FontInfo(data.getSize())</span><br><span class="line">    font = FreeTypeFontManager.getInstance().refresh(style.font==stub, newInfo)</span><br><span class="line">  &#125;</span><br><span class="line">  cache = new BitmapFontCache(font) // cache里的 font == 第一次refresh出来的</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">3. 更新文字</span><br><span class="line">Label.setText() -&gt; Widget.invalidateHierarchy()</span><br><span class="line">-&gt; Label.invalidate() &#123; needsLayout=true; sizeInvalid=true &#125;</span><br><span class="line">渲染 -&gt; draw() -&gt; Widget.validate() -&gt; Label.layout()</span><br><span class="line">-&gt; computeSize() -&gt; cache.requireSequence(text) &#123;</span><br><span class="line">  FreeTypeFontManager.isFreeTypeFont(this.font) == true:</span><br><span class="line">    this.font = FreeTypeFontManager.getInstance().refresh(this.font, curFontInfo) &#125;</span><br><span class="line">-&gt; FreeTypeFontManager.refresh(font, newInfo) &#123;</span><br><span class="line">  isStub == false</span><br><span class="line">  newInfo不含在当前子串里:</span><br><span class="line">    getFont(newInfo.size)</span><br><span class="line">-&gt; (FreeTypeFontGenerator)generator.generateFont(sizePixel, sequence, flip==false)</span><br><span class="line">-&gt; FreeTypeFontGenerator.generateData(size, chars, flip, packer==null)</span><br><span class="line">-&gt; FreeTypeFontGenerator.generateData(parameter) &#123;</span><br><span class="line">  parameter.packer == null:</span><br><span class="line">    ownsAtlas = true</span><br><span class="line">    data.regions[i] = new TextureRegion(tex=new Texture()) // new出来的texture</span><br><span class="line">    return data</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/android/build-system/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Android 构建系统 源码分析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/libgdx/skin-load/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">LibGDX skin load 源码分析</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
         </div>
         <footer id="footer">
     <div class="outer">

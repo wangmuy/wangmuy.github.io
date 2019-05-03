@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    
+    <title>Android 启动流程 源码分析 | wangmuy 的技术博客</title>
+    
+    
+        <meta name="keywords" content="Android 启动流程 源码分析">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="版本 android-4.3_r2.2涉及到的文件 /system/core/init/init.c /system/core/init/init_parser.c init_parse_config_file()   /system/core/rootdir/init.rc /frameworks/base/cmds/app_process/app_main.cpp LOCAL_MODULE:=">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 启动流程 源码分析">
+<meta property="og:url" content="http://yoursite.com/android/startup-routines/index.html">
+<meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="版本 android-4.3_r2.2涉及到的文件 /system/core/init/init.c /system/core/init/init_parser.c init_parse_config_file()   /system/core/rootdir/init.rc /frameworks/base/cmds/app_process/app_main.cpp LOCAL_MODULE:=">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-03T12:35:02.316Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 启动流程 源码分析">
+<meta name="twitter:description" content="版本 android-4.3_r2.2涉及到的文件 /system/core/init/init.c /system/core/init/init_parser.c init_parse_config_file()   /system/core/rootdir/init.rc /frameworks/base/cmds/app_process/app_main.cpp LOCAL_MODULE:=">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="wangmuy 的技术博客" type="application/atom+xml">
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+</head>
+</html>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">wangmuy 的技术博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            android
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file active"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            libgdx
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            misc
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/misc/duilib使用/">duilib使用小结</a></li>  <li class="file"><a href="/misc/plantuml基础/">PlantUML 基础</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            nodejs
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            博客搭建
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/博客搭建/octopress-setup/">用Octopress在GitHub上搭建博客</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-android/startup-routines" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/startup-routines/">
+            <time datetime="2013-11-23T08:10:00.000Z" itemprop="datePublished">2013-11-23</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/startup-routines.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/startup-routines.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/startup-routines.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Android 启动流程 源码分析
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="版本-android-4-3-r2-2"><a href="#版本-android-4-3-r2-2" class="headerlink" title="版本 android-4.3_r2.2"></a>版本 android-4.3_r2.2</h1><h1 id="涉及到的文件"><a href="#涉及到的文件" class="headerlink" title="涉及到的文件"></a>涉及到的文件</h1><ul>
+<li>/system/core/init/init.c</li>
+<li>/system/core/init/init_parser.c<ul>
+<li>init_parse_config_file()</li>
+</ul>
+</li>
+<li>/system/core/rootdir/init.rc</li>
+<li>/frameworks/base/cmds/app_process/app_main.cpp<ul>
+<li>LOCAL_MODULE:= app_process</li>
+</ul>
+</li>
+<li>/dalvik/vm/Jni.cpp<ul>
+<li>JNI_CreateJavaVM()</li>
+</ul>
+</li>
+<li>/dalvik/vm/Init.cpp<ul>
+<li>dvmStartup()</li>
+</ul>
+</li>
+</ul>
+<h1 id="init"><a href="#init" class="headerlink" title="init"></a>init</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">main() &#123; init_parse_config_file(&quot;/init.rc&quot;); execute_one_command(); &#125;</span><br><span class="line">-&gt; init_parse_config_file() 读init.rc, 按顺序读入:</span><br><span class="line"></span><br><span class="line">* ueventd /sbin/ueventd</span><br><span class="line">** class core</span><br><span class="line">* [optional]console /system/bin/sh</span><br><span class="line">** class core</span><br><span class="line">* [optional]adbd /sbin/adbd</span><br><span class="line">** class core</span><br><span class="line">* servicemanager /system/bin/servicemanager</span><br><span class="line">** class core</span><br><span class="line">* vold /system/bin/vold</span><br><span class="line">** class core</span><br><span class="line">* netd /system/bin/netd</span><br><span class="line">** class main</span><br><span class="line">* debuggerd /system/bin/debuggerd</span><br><span class="line">*class main</span><br><span class="line">* ril-daemon /system/bin/rild</span><br><span class="line">** class main</span><br><span class="line">* surfaceflinger /system/bin/surfaceflinger</span><br><span class="line">** class main</span><br><span class="line">* zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server</span><br><span class="line">** class main</span><br><span class="line">** socket zygote stream 660 root system</span><br><span class="line">** 本篇主要分析这个</span><br><span class="line">* drm /system/bin/drmserver</span><br><span class="line">** class main</span><br><span class="line">* media /system/bin/mediaserver</span><br><span class="line">** class main</span><br><span class="line">* [optional]bootanim /system/bin/bootanimation</span><br><span class="line">** class main</span><br><span class="line">等内容.</span><br><span class="line"></span><br><span class="line">-&gt; init.rc 读到</span><br><span class="line">on boot</span><br><span class="line">    ...</span><br><span class="line">    class start core</span><br><span class="line">    class_start main</span><br><span class="line">on 是一个 SECTION, parse_new_section(), 此SECTION下的每行 state.parse_line() 就是调的 parse_line_action().</span><br><span class="line">class_start 是一个 COMMAND, symbol是 K_class_start(keywords.h用宏拼接出来)</span><br><span class="line">zygote服务有 class main. 在 init.c::main() 中通过</span><br><span class="line">action_for_each_trigger(&quot;boot&quot;, action_add_queue_tail) 加入到 init_parser.c::action_queue 队列.</span><br><span class="line">最后通过 init.c::main() 中 execute_one_command() 从队列中取出执行</span><br><span class="line">-&gt; builtins.c::do_class_start()</span><br><span class="line">-&gt; service_for_each_class(args[1], service_start_if_not_disabled)</span><br><span class="line">-&gt; service_start_if_not_disabled()</span><br><span class="line">-&gt; service_start() &#123;</span><br><span class="line">  fork();</span><br><span class="line">  if(pid==0)</span><br><span class="line">    create_socket(&quot;zygote&quot;, stream, 660, root, system);</span><br><span class="line">    publish_socket(); app_process的环境变量增加 ANDROID_SOCKET_zygote=&quot;/dev/socket/zygote&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Zygote-app-process进程"><a href="#Zygote-app-process进程" class="headerlink" title="Zygote(app_process进程)"></a>Zygote(app_process进程)</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">main() &#123;</span><br><span class="line">  parentDir &lt;= &quot;/system/bin&quot;</span><br><span class="line">  if(&quot;--zygote&quot;) (AppRuntime runtime).start(&quot;com.android.internal.os.ZygoteInit&quot;, &quot;--startSystemServer&quot;? flag);</span><br><span class="line">  else runtime.start(&quot;com.android.internal.os.RuntimkeInit&quot;, &quot;--application&quot; or tool? flag); &#125;</span><br><span class="line">-&gt; AppRuntime父类 AndroidRuntime::start() &#123;</span><br><span class="line">  startVm(&amp;mJavaVM, &amp;env); onVmCreated(env); startReg(env); JNI调java的main(), 当前线程作为VM主线程, 直到VM退出. &#125;</span><br><span class="line">  -&gt; AndroidRuntime::startVm()</span><br><span class="line">    -&gt; JNI_CreateJavaVM() &#123; memset((DvmGlobals gDvm), 0); calloc (JavaVMExt *pVM); dvmCreateJNIEnv(); dvmStartup(); &#125;</span><br><span class="line">      -&gt; dvmCreateJNIEnv() &#123; calloc (JNIEnvExt *newEnv); dvmSetJniEnvThreadId(newEnv, self); &#125;</span><br><span class="line">      -&gt; dvmStartup() &#123;</span><br><span class="line">        processOptions() &quot;-Xzygote&quot;设置 gDvm.zygote;</span><br><span class="line">        if(gDvm.zygote) initZygote() else dvmInitAfterZygote(); &#125;</span><br><span class="line">--JAVA--&gt; ZygoteInit#main() &#123;</span><br><span class="line">  registerZygoteSocket(); preload(); gc();</span><br><span class="line">  if(&quot;start-system-server&quot;) startSystemServer();</span><br><span class="line">  无限循环runSelectLoop(); &#125;</span><br><span class="line">  -&gt; registerZygoteSocket() JAVA端用上 create_socket() 出来的 UNIX Domain socket, 作为server端.</span><br><span class="line">  -&gt; preload() &#123;</span><br><span class="line">    preloadClasses(); &quot;preloaded-classes&quot;文件每行 #ClassName 调用 Class.forName()</span><br><span class="line">    preloadResources(); &#125;</span><br><span class="line">-&gt; startSystemServer() &#123;</span><br><span class="line">  Zygote.forkSystemServer(); 最后调的是 dalvik_system_Zygote.cpp::Dalvik_dalvik_system_Zygote_forkSystemServer()</span><br><span class="line">  if(pid==0) handleSystemServerProcess() &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="System-Server-app-process子进程"><a href="#System-Server-app-process子进程" class="headerlink" title="System Server(app_process子进程)"></a>System Server(app_process子进程)</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">--SystemServer进程--&gt; handleSystemServerProcess()</span><br><span class="line">-&gt; RuntimeInit#zygoteInit() &#123;</span><br><span class="line">  redirectLogStreams(); 重定向System.out和System.err到logcat系统.</span><br><span class="line">  commonInit(); nativeZygoteInit(); applicationInit(); &#125;</span><br><span class="line">  --JNI--&gt; nativeZygoteInit()</span><br><span class="line">    -&gt; AndroidRuntime.cpp::com_android_internal_os_RuntimeInit_nativeZygoteInit()</span><br><span class="line">    -&gt; app_main.cpp AppRunTime::onZygoteInit() &#123; (ProcessState proc)-&gt;startThreadPool() &#125;</span><br><span class="line">    -&gt; ProcessState.cpp::spawnPooledThread(true) &#123;</span><br><span class="line">      t=new PoolThread(isMain==true); // mCanCallJava默认为true</span><br><span class="line">      // android_atomic_add()等类似函数返回操作之前的数</span><br><span class="line">      t-&gt;run(&quot;Binder_1&quot;, 默认priority==PRIORITY_DEFAULT, 默认stack==0) &#125;</span><br><span class="line">      --新线程--&gt; _threadLoop() -&gt; PoolThread::threadLoop()</span><br><span class="line">      -&gt; IPCThreadState::joinThreadPool() // ioctl &quot;/dev/binder&quot; 加入Binder线程池, 无限阻塞获取并执行binder驱动发过来的命令</span><br><span class="line">  -&gt; applicationInit()</span><br><span class="line">    -&gt; invokeStatkcMain(&quot;com.android.server.SystemServer&quot;, startArgs) // args在 ZygoteInit#startSystemServer()</span><br><span class="line">    -&gt; throw new ZygoteInit.MethodAndArgsCaller(m, argv) 抛异常方式扔掉初始化时多余的栈, 在ZygoteInit#main()捕捉</span><br><span class="line">    -&gt; ZygoteInit#main caller.run()</span><br><span class="line">-&gt; SystemServer#main() &#123; loadLibrary(&quot;android_servers&quot;); init1(); &#125;</span><br><span class="line">  -&gt; init1() --JNI--&gt; android_server_SystemServer_init1()</span><br><span class="line">  --C++--&gt; system_init.cpp::system_init() &#123;</span><br><span class="line">    defaultServiceManager(); // handle==0</span><br><span class="line">    JNI调 SystemServer#init2();</span><br><span class="line">    ProcessState::startThreadPool(), joinThreadPool(默认isMain==true); &#125;</span><br><span class="line">    -&gt; SystemServer#init2()</span><br><span class="line">    --新线程--&gt; ServerThread#run() &#123;</span><br><span class="line">      uiHandlerThread = new HandlerThread(); // 起UI线程</span><br><span class="line">      wmHandlerThread = new HandlerThread(); // 起WM线程</span><br><span class="line">      context = ActivityManagerService.main();</span><br><span class="line">      起各个service:</span><br><span class="line">      wm = WindowManagerService.main(context, power, display, inputManager, ...);</span><br><span class="line">      ServiceManager.addService(Context.WINDOW_SERVICE, wm);</span><br><span class="line">      ActivityManagerService.self().setWindowManager(wm);</span><br><span class="line">      wm.displayReady();</span><br><span class="line">      ...</span><br><span class="line">      ActivityManagerService.self().systemReady(runnable调各个service.systemReady); // AMS准备完毕</span><br><span class="line">    &#125;</span><br><span class="line">    -&gt; ActivityManagerService#main() &#123;</span><br><span class="line">      thr = new AThread(); thr.start(); // 新起Looper用线程: 创建AMS, looper.loop()</span><br><span class="line">      (ActivityThread at) = ActivityThread.systemMain(); // 本线程本Looper管理Acitivty生命周期</span><br><span class="line">      (ActivityManagerService m).mMainStack = new ActivityStack(m, context==at.getSystemContext(), true, thr.mLooper);</span><br><span class="line">      m.startRunning();</span><br><span class="line">    &#125;</span><br><span class="line">      -&gt; ActivityThread#systemMain() &#123; thread=new ActivityThread(); thread.attach(system==true); &#125;</span><br><span class="line">        -&gt; ActivityThread#attach() &#123;</span><br><span class="line">          system==true:</span><br><span class="line">            context=new ContextImpl(); context.init();</span><br><span class="line">            app=newApplication(Application.class, context);</span><br><span class="line">            mAllApplications.add(app); mInitialApplication=app; app.onCreate();</span><br><span class="line">          &#125;</span><br><span class="line">    -&gt; WMS#displayReady() &#123;</span><br><span class="line">        displayReady(Display.DEFAULT_DISPLAY);</span><br><span class="line">        mDisplayReady = true;</span><br><span class="line">        mIsTouchDevice = mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);</span><br><span class="line">        (mPolicy 就是 PhoneWindowManager).setInitialDisplaySize(...);</span><br><span class="line">      &#125;</span><br><span class="line">      -&gt; WMS#displayReady(DEFAULT_DISPLAY) &#123;</span><br><span class="line">        DisplayContent displayContent = getDisplayContentLocked(DEFAULT_DISPLAY);</span><br><span class="line">        mAnimator.addDisplayLocked(displayId);</span><br><span class="line">      &#125;</span><br><span class="line">        -&gt; WMS#getDisplayContentLocked(DEFAULT_DISPLAY) &#123;</span><br><span class="line">          Display display = mDisplayManager.getDisplay(DEFAULT_DISPLAY);</span><br><span class="line">          displayContent = newDisplayContentLocked(display);</span><br><span class="line">        &#125;</span><br><span class="line">        -&gt; DisplayManager#getDisplay(DEFAULT_DISPLAY) &#123; DisplayManager#getOrCreateDisplayLocked(DEFAULT_DISPLAY, false); &#125;</span><br><span class="line">        -&gt; WMS#newDisplayContentLocked(display) &#123;</span><br><span class="line">          displayContent = new DisplayContent(display);</span><br><span class="line">          mDisplaySettings.getOverscanLocked(info.name, rect);</span><br><span class="line">          mDisplayManagerService.setOverscan(display.getDisplayId(), rect...);</span><br><span class="line">          (mPolicy 就是 PhoneWindowManager).setDisplayOverscan(displayContent.getDisplay(), rect...);</span><br><span class="line">        &#125;</span><br><span class="line">    -&gt; AMS#systemReady(goingCallback) &#123;</span><br><span class="line">      goingCallback.run();</span><br><span class="line">      mMainStack.resumeTopActivityLocked(null);</span><br><span class="line">    &#125;</span><br><span class="line">      -&gt; ActivityStack#resumeTopActivityLocked(null)</span><br><span class="line">      -&gt; resumeTopActivityLocked(prev==null, options==null) &#123; next==null: mService.startHomeActivityLocked() &#125;</span><br><span class="line">      -&gt; ActivityServiceManager#startHomeActivityLocked()</span><br><span class="line">      -&gt; ActivityStack#startActivityLocked(caller==null, intent, resolvedType==null, aInfo==Launcher信息,</span><br><span class="line">        resultTo==null, resultWho==null, requestCode==0, callingPid==0, callingUid==0, callingPackage==null,</span><br><span class="line">        startFlags==0, options==null, componentSpecified==false, outActivity==null)</span><br><span class="line">      -&gt; startActivityUncheckedLocked(r==new ActivityRecord(), sourceRecord==null,</span><br><span class="line">        startFlags==0, doResume==true, options==null)</span><br><span class="line">      -&gt; startActivityLocked(r, newTask==true, doResume==true, keepCurTransition==false, options==null) &#123;</span><br><span class="line">        mHistory.size() == 0: mService.mWindowManager.addAppToken(addPos==0 ...);</span><br><span class="line">        doResume==true: resumeTopActivityLocked(null);</span><br><span class="line">      &#125;</span><br><span class="line">        -&gt; resumeTopActivityLocked(null)</span><br><span class="line">        -&gt; resumeTopActivityLocked(prev==null, options==null) &#123;</span><br><span class="line">          (ActivityRecord next)==Launcher</span><br><span class="line">          (ProcessRecord next.app)==null: startSpecificActivityLocked(next, andResume==true, checkConfig==true)</span><br><span class="line">        &#125;</span><br><span class="line">        -&gt; startSpecificActivityLocked() &#123; getProcessRecordLocked()==null: mService.startProcessLocked(); &#125;</span><br><span class="line">        -&gt; AMS#startProcessLocked(r.processName, r.info.applicationInfo, knownToBeDead==true, intentFlags==0,</span><br><span class="line">          hostingType==&quot;activity&quot;, r.intent.getComponent(), allowWhileBooting==false, isolated==false) &#123;</span><br><span class="line">            getProcessRecordLocked()==null:</span><br><span class="line">              app=newProcessRecordLocked(null, info, processName, isolated==false)</span><br><span class="line">              startProcessLocked(app, hostingType==&quot;activity&quot;, hostingNameStr)</span><br><span class="line">          &#125;</span><br><span class="line">          -&gt; startProcessLocked() &#123; startResult=Process.start(&quot;android.app.ActivityThread&quot;, ...) &#125;</span><br><span class="line">          -&gt; Process#startViaZygote(processClass==&quot;android.app.ActivityThread&quot;, ...)</span><br><span class="line">          -&gt; Process#zygoteSendArgsAndGetResult() &#123; Binder命令zygote(app_process) fork新进程 &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Launcher应用"><a href="#Launcher应用" class="headerlink" title="Launcher应用"></a>Launcher应用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">--新进程Launcher--&gt; ZygoteConnection#handleChildProc()</span><br><span class="line">-&gt; ZygoteInit#invokeStaticMain()</span><br><span class="line">--抛异常方式回调--&gt; ActivityThread#main() &#123;</span><br><span class="line">  thread=new ActivityThread(); thread.attach(false);</span><br><span class="line">  sMainHandler=thread.getHandler(); Looper.loop(); &#125;</span><br><span class="line">-&gt; ActivityThread#attach(system==false) &#123;</span><br><span class="line">  mgr=ActivityManagerNative.getDefault(); mgr.attachApplication(ApplicationThread mAppThread); &#125;</span><br><span class="line">--Binder--&gt; ActivityManagerNative#attachApplication(app)</span><br><span class="line">-&gt; 子类AMS#attachApplication(app)</span><br><span class="line">-&gt; AMS#attachApplicationLocked() &#123;</span><br><span class="line">     ActivityRecord hr=mMainStack.topRunningActivityLocked();</span><br><span class="line">     hr!=null &amp;&amp; normalMode, hr.app==null:</span><br><span class="line">       mMainStack.realStartActivityLocked(hr, app, true, true);</span><br><span class="line">   &#125;</span><br><span class="line">  -&gt; ActivityStack#realStartActivityLocked() &#123; app.thread.scheduleLaunchActivity(intent, appToken, ...); &#125;</span><br><span class="line">--Binder--&gt; Launcher进程 ApplicationThread#scheduleLaunchActivity()</span><br><span class="line">-&gt; queueOrSendMessage(H.LAUNCH_ACTIVITY, r)</span><br><span class="line">--Handler H--&gt; ActivityThread#handleLaunchActivity(r, null) &#123; performLaunchActivity(); handleResumeActivity(); &#125;</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/android/recyclerview/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    RecyclerView 源码分析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/nodejs/crypto模块使用/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Node.js Crypto模块 使用示例</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Wangmuy &copy; 2019 
+            <a rel="external nofollow noopener noreferrer" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten" rel="external nofollow noopener noreferrer" target="_blank">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
