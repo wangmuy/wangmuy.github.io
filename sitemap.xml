@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/android/activity-%E9%80%8F%E6%98%8E%E9%9D%9E%E9%80%8F%E6%98%8E-%E8%BD%AC%E6%8D%A2/</loc>
+    
+    <lastmod>2019-05-03T13:53:01.096Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/package-installer-%E5%8A%A8%E6%80%81%E6%9D%83%E9%99%90/</loc>
+    
+    <lastmod>2019-05-03T13:51:20.710Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/resolve-activity/</loc>
+    
+    <lastmod>2019-05-03T13:48:14.648Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/debug-hwui-profile/</loc>
+    
+    <lastmod>2019-05-03T13:45:43.129Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/aapt/</loc>
+    
+    <lastmod>2019-05-03T13:43:22.237Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/misc/plantuml%E5%9F%BA%E7%A1%80/</loc>
     
     <lastmod>2019-05-03T13:05:47.618Z</lastmod>

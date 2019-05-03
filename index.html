@@ -162,7 +162,7 @@
                             &nbsp;
                             android
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  <li class="file"><a href="/android/aapt/">aapt 源码分析</a></li>  <li class="file"><a href="/android/debug-hwui-profile/">Android debug-hwui-profile</a></li>  <li class="file"><a href="/android/resolve-activity/">ResolverActivity 流程</a></li>  <li class="file"><a href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a></li>  <li class="file"><a href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -272,6 +272,436 @@
 </aside>
             
             <section id="main">
+        <article id="post-android/activity-透明非透明-转换" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/activity-透明非透明-转换/">
+            <time datetime="2016-12-01T02:16:21.000Z" itemprop="datePublished">2016-12-01</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/activity-透明非透明-转换.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/activity-透明非透明-转换.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/activity-透明非透明-转换.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+            
+        
+        
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">Activity.convertFromTranslucent() &#123;</span><br><span class="line">ActivityManagerNative.getDefault().convertFromTranslucent(mToken)</span><br><span class="line">WindowManagerGlobal.getInstance().changeCanvasOpacity(mToken, true)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">--binder--&gt; ActivityManagerService.convertFromTranslucent() &#123;</span><br><span class="line">(ActivityRecord r).changeWindowTranslucency(true)</span><br><span class="line">r.task.stack.releaseBackgroundResources(r)</span><br><span class="line">mStackSupervisor.ensureActivitiesVisibleLocked(null, 0)</span><br><span class="line">mWindowManager.setAppFullscreen(token, true)</span><br><span class="line">&#125;</span><br><span class="line">-&gt; ActivityStackSupervisor.ensureActivitiesVisibleLocked() &#123;</span><br><span class="line">遍历 display, stack</span><br><span class="line">  ActivityStack.ensureActivitiesVisibleLocked() &#123;</span><br><span class="line">    behindFullscreen &amp;&amp; r.visible: 影响到的(ActivityRecord r) 根据r.state动作:</span><br><span class="line">    case RESUMED: mStackSupervisor.mStoppingActivities.add(r); mStackSupervisor.scheduleIdleLocked()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">--IDLE_NOW_MSG--&gt; ActivityStackSupervisor.activityIdleInternelLocked() &#123;</span><br><span class="line">ArrayList&lt;ActivityRecord&gt; stops = processStoppingActivitiesLocked(true) 从mStoppingActivities取要stop的</span><br><span class="line">遍历stops: (ActivityStack stack).stopActivityLocked(r)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-&gt; ActivityStack.stopActivityLocked(r) &#123; r.app.thread.scheduleStopActivity() &#125;</span><br><span class="line">-&gt; ApplicationThreadProxy.scheduleStopActivity(r.appToken, r.visible==false, r.configChangeFlags)</span><br><span class="line">--binder--&gt; (ActivityThread.ApplicationThread extends ApplicationThreadNative).scheduleStopActivity() &#123; scheduleStopActivity() &#125;</span><br><span class="line">--handler STOP_ACTIVITY_HIDE--&gt; ActivityThread.handleStopActivity()</span><br><span class="line">-&gt; ActivityThread.performStopActivityInner()</span><br><span class="line">-&gt; Activity.performStop()</span><br><span class="line">-&gt; Instrumentation.callActivityOnStop() &#123; activity.onStop() &#125;</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-android/package-installer-动态权限" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/package-installer-动态权限/">
+            <time datetime="2016-11-29T02:57:43.000Z" itemprop="datePublished">2016-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/package-installer-动态权限.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/package-installer-动态权限.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/package-installer-动态权限.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                    
+                    <p></p><h1 id="manifest统计"><a href="#manifest统计" class="headerlink" title="manifest统计"></a>manifest统计</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.PackageInstallerActivity</span><br><span class="line">action=&quot;android.content.pm.action.CONFIRM_PERMISSIONS&quot;</span><br><span class="line">category=&quot;android.intent.category.DEFAULT&quot;</span><br><span class="line"></span><br><span class="line">.permission.ui.GrantPermissionsActivity</span><br><span class="line">action=&quot;android.content.pm.action.REQUEST_PERMISSIONS&quot;</span><br><span class="line">category=&quot;android.intent.category.DEFAULT&quot;</span><br><span class="line"></span><br><span class="line">.permission.ui.ManagePermissionsActivity</span><br><span class="line">action=&quot;android.intent.action.MANAGE_PERMISSIONS&quot;</span><br><span class="line">action=&quot;android.intent.action.MANAGE_APP_PERMISSIONS&quot;</span><br><span class="line">action=&quot;android.intent.action.MANAGE_PERMISSION_APPS&quot;</span><br><span class="line">category=&quot;android.intent.category.DEFAULT&quot;</span><br><span class="line"></span><br><span class="line">receiver=&quot;.permission.model.PermissionStatusReceiver&quot;</span><br><span class="line">android:permission=&quot;android.permission.GRANT_RUNTIME_PERMISSIONS&quot;</span><br><span class="line">intent-filter action=&quot;android.intent.action.GET_PERMISSIONS_COUNT&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="PackageInstallerActivity"><a href="#PackageInstallerActivity" class="headerlink" title="PackageInstallerActivity"></a>PackageInstallerActivity</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">入口activity</span><br><span class="line">CONFIRM_PERMISSIONS 通过session进来, 记住sessionId, 选择后回调给session mInstaller.setPermissionsResult()</span><br></pre></td></tr></table></figure>
+<h1 id="GrantPermissionsActivity"><a href="#GrantPermissionsActivity" class="headerlink" title="GrantPermissionsActivity"></a>GrantPermissionsActivity</h1><ul>
+<li>应用主动申请权限时出现的授权界面</li>
+<li>授权权限按组进行</li>
+<p>
+                
+            
+        
+        
+            </p></ul></div>   
+            <div class="article-more-link">
+                <a href="/android/package-installer-动态权限/#more">查看更多</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-android/resolve-activity" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/resolve-activity/">
+            <time datetime="2016-11-16T07:12:28.000Z" itemprop="datePublished">2016-11-16</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/resolve-activity.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/resolve-activity.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/resolve-activity.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/android/resolve-activity/">ResolverActivity 流程</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                <p></p><h1 id="版本-aosp-5-1-1-r6"><a href="#版本-aosp-5-1-1-r6" class="headerlink" title="版本 aosp-5.1.1_r6"></a>版本 aosp-5.1.1_r6</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ResolverActivity.java ResolveListAdapter.ctor()</span><br><span class="line">-&gt; ResolveListAdapter.rebuildList()</span><br><span class="line">--binder--&gt; PackageManagerService.queryIntentActivities() &#123;</span><br><span class="line">    if intent有component, 直接返回component指定的;</span><br><span class="line">    if intent有packageName, ActivityIntentResolver.queryIntentForPackage()</span><br><span class="line">    else ActivityIntentResolver.queryIntent()</span><br><span class="line">&#125;</span><br><span class="line">-&gt;1. (ActivityIntentResolver父类 IntentResolver).queryIntent()</span><br><span class="line">-&gt;2. (ActivityIntentResolver父类 IntentResolver).queryIntentForPackage()</span><br><span class="line"></span><br><span class="line">-&gt; IntentResolver.buildResolveList()</span><br></pre></td></tr></table></figure><p></p>
+            
+        
+        
+            </div>   
+            <div class="article-more-link">
+                <a href="/android/resolve-activity/#more">查看更多</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-android/debug-hwui-profile" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/debug-hwui-profile/">
+            <time datetime="2016-10-18T12:21:32.000Z" itemprop="datePublished">2016-10-18</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/debug-hwui-profile.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/debug-hwui-profile.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/debug-hwui-profile.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/android/debug-hwui-profile/">Android debug-hwui-profile</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                    
+                    <p></p><h1 id="本文目标"><a href="#本文目标" class="headerlink" title="本文目标"></a>本文目标</h1><h2 id="探索-gpu呈现模式-测量的是什么"><a href="#探索-gpu呈现模式-测量的是什么" class="headerlink" title="探索 gpu呈现模式 测量的是什么"></a>探索 gpu呈现模式 测量的是什么</h2><h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><h2 id="原生Settings"><a href="#原生Settings" class="headerlink" title="原生Settings"></a>原生Settings</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Settings -&gt; 开发者选项 -&gt; gpu呈现模式</span><br></pre></td></tr></table></figure>
+<h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setprop debug.hwui.profile visual_bars <span class="comment"># false关闭</span></span><br></pre></td></tr></table></figure>
+<h1 id="图形解释"><a href="#图形解释" class="headerlink" title="图形解释"></a>图形解释</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">蓝色: create/update DisplayList</span><br><span class="line">紫色: 同步到render thread</span><br><span class="line">红色: 将DisplayList转为gl命令调用</span><br><span class="line">黄色: cpu等待gpu完成</span><br></pre></td></tr></table></figure>
+<h1 id="profile时机"><a href="#profile时机" class="headerlink" title="profile时机"></a>profile时机</h1><h2 id="4-4-4-r1"><a href="#4-4-4-r1" class="headerlink" title="4.4.4_r1"></a>4.4.4_r1</h2><h3 id="涉及文件"><a href="#涉及文件" class="headerlink" title="涉及文件"></a>涉及文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HardwareRenderer.java</span><br></pre></td></tr></table></figure>
+<h3 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HardwareRenderer.drawProfileData() &#123;</span><br><span class="line">  mProfileData 数据</span><br><span class="line">  for(i=0; i &lt; getFrameCount()*elementCount; i+=elementCount)</span><br><span class="line">    mProfileShapes[] &lt;- bar条rect</span><br><span class="line">    drawGraph() 画bar条</span><br><span class="line">    drawCurrentFrame() if(当前帧) 加深当前帧的bar条</span><br><span class="line">    drawThreadshold() 16ms水平线</span><br></pre></td></tr></table></figure>
+<p>
+                
+            
+        
+        
+            </p></div>   
+            <div class="article-more-link">
+                <a href="/android/debug-hwui-profile/#more">查看更多</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
+        <article id="post-android/aapt" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/aapt/">
+            <time datetime="2016-09-11T08:42:19.000Z" itemprop="datePublished">2016-09-11</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/aapt.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/aapt.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/aapt.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/android/aapt/">aapt 源码分析</a>
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                
+                <p></p><h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Resource Id 32位 = 8(packageId) + 8(typeId) + 16(nameId)</span><br><span class="line">ResourceTable.cpp::makeResId()</span><br></pre></td></tr></table></figure>
+<h1 id="framework-res典型调用"><a href="#framework-res典型调用" class="headerlink" title="framework-res典型调用"></a>framework-res典型调用</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">out/host/linux-x86/bin/aapt package -u -x -z  --pseudo-localize   -M frameworks/base/core/res/AndroidManifest.xml -S device/myvendor/overlay/frameworks/base/core/res/res -S frameworks/base/core/res/res -A frameworks/base/core/res/assets  --min-sdk-version 22 --target-sdk-version 22 --product phone --version-code 22 --version-name 5.1.1-2.0.16   -F out/target/common/obj/APPS/framework-res_intermediates/package-export.apk</span><br></pre></td></tr></table></figure>
+<h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><p></p>
+            
+        
+        
+            </div>   
+            <div class="article-more-link">
+                <a href="/android/aapt/#more">查看更多</a>
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+
+
+
+
+    
         <article id="post-misc/plantuml基础" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -717,466 +1147,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2. Label初始化</span><br><span class="line">new Label() -&gt; Label.setStyle() &#123;</span><br><span class="line">  FreeTypeFontManager.isFreeTypeFont(style.font)==true &#123;</span><br><span class="line">    data.setSize(style.fontSize)</span><br><span class="line">    new FontInfo(data.getSize())</span><br><span class="line">    font = FreeTypeFontManager.getInstance().refresh(style.font==stub, newInfo)</span><br><span class="line">  &#125;</span><br><span class="line">  cache = new BitmapFontCache(font) // cache里的 font == 第一次refresh出来的</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">3. 更新文字</span><br><span class="line">Label.setText() -&gt; Widget.invalidateHierarchy()</span><br><span class="line">-&gt; Label.invalidate() &#123; needsLayout=true; sizeInvalid=true &#125;</span><br><span class="line">渲染 -&gt; draw() -&gt; Widget.validate() -&gt; Label.layout()</span><br><span class="line">-&gt; computeSize() -&gt; cache.requireSequence(text) &#123;</span><br><span class="line">  FreeTypeFontManager.isFreeTypeFont(this.font) == true:</span><br><span class="line">    this.font = FreeTypeFontManager.getInstance().refresh(this.font, curFontInfo) &#125;</span><br><span class="line">-&gt; FreeTypeFontManager.refresh(font, newInfo) &#123;</span><br><span class="line">  isStub == false</span><br><span class="line">  newInfo不含在当前子串里:</span><br><span class="line">    getFont(newInfo.size)</span><br><span class="line">-&gt; (FreeTypeFontGenerator)generator.generateFont(sizePixel, sequence, flip==false)</span><br><span class="line">-&gt; FreeTypeFontGenerator.generateData(size, chars, flip, packer==null)</span><br><span class="line">-&gt; FreeTypeFontGenerator.generateData(parameter) &#123;</span><br><span class="line">  parameter.packer == null:</span><br><span class="line">    ownsAtlas = true</span><br><span class="line">    data.regions[i] = new TextureRegion(tex=new Texture()) // new出来的texture</span><br><span class="line">    return data</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-            </div>
-        
-        <footer class="article-footer">
-        </footer>
-    </div>
-</article>
-
-
-
-
-
-
-    
-        <article id="post-libgdx/skin-load" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-                    <div class="article-meta">
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/libgdx/">libgdx</a>
-    </div>
-
-                        
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/libgdx/skin-load/">
-            <time datetime="2014-09-22T09:35:06.000Z" itemprop="datePublished">2014-09-22</time>
-        </a>
-    </div>
-
-
-                        
-                            <i class="fa fa-bar-chart"></i>
-                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
-                        
-                        
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/libgdx/skin-load.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/libgdx/skin-load.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/libgdx/skin-load.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
-                            </div>
-                        
-                    </div>
-                
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/libgdx/skin-load/">LibGDX skin load 源码分析</a>
-        </h1>
-    
-
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-        
-            
-                
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-            
-        
-        
-            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">构造函数里设置 SkinLoader</span><br><span class="line">AssetManager.ctor() &#123; setLoader(Skin.class, new SkinLoader(resolver==new InternalFileHandleResolver())) &#125;</span><br><span class="line">-&gt; AssetManager.setLoader(Skin.class, suffix==null, SkinLoader)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">用户程序调 load</span><br><span class="line">AssetManager.load(fileName, Skin.class)</span><br><span class="line">-&gt; AssetManager.load(fileName, Skin.class, parameter==null) &#123;</span><br><span class="line">  getLoader(Skin.class, fileName);</span><br><span class="line">  loadQueue.add(new AssetDescriptor(fileName, Skin.class, parameter))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">用户程序调 finishLoading</span><br><span class="line">AssetManager.finishLoading() &#123; while(!update()) ThreadUtils.yield() &#125;</span><br><span class="line">-&gt; AssetManager.update() &#123; nextTask(); updateTask(); &#125;</span><br><span class="line">AssetManager.nextTask() &#123; assetDesc = loadQueue.removeIndex(0); addTask(assetDesc) or inc ref &#125;</span><br><span class="line">AssetManager.updateTask() &#123; task.update(); addAsset(fileName, type, task.getAsset()) &#125;</span><br><span class="line">-&gt; AssetLoadingTask.update() &#123; handleSyncLoader() or handleAsyncLoader() &#125;</span><br><span class="line">SkinLoader 是 AsynchronousAssetLoader, 这里会调用 handleAsyncLoader()</span><br><span class="line">-&gt; AssetLoadingTask.handleAsyncLoader() &#123;</span><br><span class="line">    // 执行多次,  因为submit到线程池中, 被调 call().</span><br><span class="line">    // SkinLoader.getDependencies() 加入装载 TextureAtlas 的依赖</span><br><span class="line">    exec0:</span><br><span class="line">	dependenciesLoaded == false &amp;&amp; depsFuture == null:</span><br><span class="line">	    depsFuture = (AsyncExecutor executor).submit(this)</span><br><span class="line">	exec1:</span><br><span class="line">	dependenciesLoaded == false &amp;&amp; depsFuture.isDone():</span><br><span class="line">	    dependenciesLoaded = true</span><br><span class="line">	可能的exec2:</span><br><span class="line">	loadFuture == null &amp;&amp; !asyncDone:</span><br><span class="line">	    loadFuture = executor.submit(this)</span><br><span class="line">	    // 会在线程池中执行 AssetLoadingTask.call() -&gt; 即本loader的 loadAsync()</span><br><span class="line">	最后的exec:</span><br><span class="line">	asyncDone:</span><br><span class="line">	    asset = asyncLoader.loadSync(manager, fileName, resolve(loader, assetDesc), params)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">SkinLoader.loadSync() &#123; new Skin(atlas).load(file) &#125;</span><br><span class="line">-&gt; Skin.load(skinFile) &#123; getJsonLoader().fromJson(Skin.class, skinFile) &#125;</span><br><span class="line">-&gt; Json.fromJson(type==Skin.class) &#123; this.readValue(type, null, new JsonReader().parse(file)) &#125;</span><br><span class="line"></span><br><span class="line">JsonReader.parse(file) &#123; JsonReader.parse(file.reader(&quot;UTF-8&quot;)) &#125;</span><br><span class="line">-&gt; JsonReader.parse(Reader reader) -&gt; JsonReader.parse(data, 0, offset)</span><br><span class="line"></span><br><span class="line">FileHandle.reader(charset) &#123; return new InputStreamReader(read(), charset) &#125;</span><br><span class="line">FileHandle.read() &#123; return new FileInputStream(file()) &#125;</span><br><span class="line">FileHandle.file() &#123; return java.io.File &#125;</span><br><span class="line"></span><br><span class="line">Skin.getJsonLoader(skinFile) &#123; return 匿名Json新类 &#125;</span><br><span class="line">匿名Json类.readValue(Skin.class, null, jsonData) &#123;</span><br><span class="line">	jsonData.isString() == false:</span><br><span class="line">	    super.readValue(Skin.class, elementType==null, jsonData)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Json.readValue(Skin.class, elementType==null, jsonData) &#123;</span><br><span class="line">	jsonData.isObject() == true:</span><br><span class="line">	    typeName == null: className = null</span><br><span class="line">	    serializer = classToSerializer.get(Skin.class) // 在Skin.java匿名类中有SetSerializer</span><br><span class="line">	    serializer.read(this, jsonData, type)</span><br><span class="line">&#125;</span><br><span class="line">-&gt; 匿名Json类.read() &#123; for(valueMap) readnamedObjects(json, ClassReflection.forName(valueMap.name()), valueMap) &#125;</span><br></pre></td></tr></table></figure>
-
-            </div>
-        
-        <footer class="article-footer">
-        </footer>
-    </div>
-</article>
-
-
-
-
-
-
-    
-        <article id="post-android/recyclerview" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-                    <div class="article-meta">
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/android/">android</a>
-    </div>
-
-                        
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/android/recyclerview/">
-            <time datetime="2014-07-26T09:23:01.000Z" itemprop="datePublished">2014-07-26</time>
-        </a>
-    </div>
-
-
-                        
-                            <i class="fa fa-bar-chart"></i>
-                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
-                        
-                        
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/recyclerview.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/recyclerview.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/recyclerview.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
-                            </div>
-                        
-                    </div>
-                
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/android/recyclerview/">RecyclerView 源码分析</a>
-        </h1>
-    
-
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-        
-            
-                
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                
-                    
-                    <p></p><p>版本: 25.1.0</p>
-<h1 id="Scroll"><a href="#Scroll" class="headerlink" title="Scroll"></a>Scroll</h1><h1 id="调用顺序"><a href="#调用顺序" class="headerlink" title="调用顺序"></a>调用顺序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RecyclerView#requestChildFocus()</span><br><span class="line">-&gt; RecyclerView#requestChildRectangleOnScreen()</span><br><span class="line">-&gt; LayoutManager#requestChildRectangleOnScreen()</span><br><span class="line">-&gt; RecyclerView#smoothScrollBy(int, int)</span><br></pre></td></tr></table></figure>
-<h1 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h1><h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addOnScrollListener/removeOnScrollListener (OnScrollListener)</span><br></pre></td></tr></table></figure>
-<h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><h3 id="ScrollListener-onScrolled"><a href="#ScrollListener-onScrolled" class="headerlink" title="ScrollListener.onScrolled()"></a>ScrollListener.onScrolled()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;- RecyclerView.dispatchOnScrolled()</span><br><span class="line">1. &lt;- RecyclerView.scrollByInternal()</span><br><span class="line">  1.1 &lt;- scrollBy(x, y)</span><br><span class="line">    1.1.1 &lt;- RV.LayoutManager.requestChildRectangleOnScreen() &#123; dx!=0 || dy!=0 &#125;</span><br><span class="line">    1.1.2 &lt;- RV.LayoutManager.performAccessibilityAction() &#123; vScroll != 0 || hScroll != 0 &#125;</span><br><span class="line">  1.2 &lt;- RV.onTouchEvent() ACTION_MOVE 触摸移动</span><br><span class="line">  1.3 &lt;- RV.onGenericMotionEvent() SOURCE_CLASS_POINTER ACTION_SCROLL 鼠标滚轮</span><br><span class="line">2. &lt;- RecyclerView.dispatchLayoutStep3() &#123; dispatchOnScrolled(0,0) &#125; layout引起的 item range changed</span><br><span class="line">3. &lt;- RV.ViewFlinger.run() &#123;</span><br><span class="line">  hresult=LayoutManager.scrollHorizontallyBy(); 线性布局 会调到 LinearLayoutManager.scrollBy()</span><br><span class="line">  vresult=LayoutManager.scrollVeriticallyBy();</span><br><span class="line">  (hresult != 0 || vresult != 0) dispatchOnScrolled() &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="RV-smoothScrollBy"><a href="#RV-smoothScrollBy" class="headerlink" title="RV.smoothScrollBy()"></a>RV.smoothScrollBy()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-&gt; RV.ViewFlinger.smoothScrollBy()</span><br></pre></td></tr></table></figure>
-<p>
-                
-            
-        
-        
-            </p></div>   
-            <div class="article-more-link">
-                <a href="/android/recyclerview/#more">查看更多</a>
-            </div>
-        
-        <footer class="article-footer">
-        </footer>
-    </div>
-</article>
-
-
-
-
-
-
-    
-        <article id="post-android/startup-routines" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-                    <div class="article-meta">
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/android/">android</a>
-    </div>
-
-                        
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/android/startup-routines/">
-            <time datetime="2013-11-23T08:10:00.000Z" itemprop="datePublished">2013-11-23</time>
-        </a>
-    </div>
-
-
-                        
-                            <i class="fa fa-bar-chart"></i>
-                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
-                        
-                        
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/startup-routines.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/startup-routines.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/startup-routines.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
-                            </div>
-                        
-                    </div>
-                
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/android/startup-routines/">Android 启动流程 源码分析</a>
-        </h1>
-    
-
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-        
-            
-                
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                
-                    
-                    <p></p><h1 id="版本-android-4-3-r2-2"><a href="#版本-android-4-3-r2-2" class="headerlink" title="版本 android-4.3_r2.2"></a>版本 android-4.3_r2.2</h1><h1 id="涉及到的文件"><a href="#涉及到的文件" class="headerlink" title="涉及到的文件"></a>涉及到的文件</h1><ul>
-<li>/system/core/init/init.c</li>
-<li>/system/core/init/init_parser.c<ul>
-<li>init_parse_config_file()</li>
-</ul>
-<p>
-                
-            
-        
-        
-            </p></li></ul></div>   
-            <div class="article-more-link">
-                <a href="/android/startup-routines/#more">查看更多</a>
-            </div>
-        
-        <footer class="article-footer">
-        </footer>
-    </div>
-</article>
-
-
-
-
-
-
-    
-        <article id="post-nodejs/crypto模块使用" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-                    <div class="article-meta">
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/nodejs/">nodejs</a>
-    </div>
-
-                        
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/nodejs/crypto模块使用/">
-            <time datetime="2013-11-14T09:44:00.000Z" itemprop="datePublished">2013-11-14</time>
-        </a>
-    </div>
-
-
-                        
-                            <i class="fa fa-bar-chart"></i>
-                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
-                        
-                        
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/nodejs/crypto模块使用.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/nodejs/crypto模块使用.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/nodejs/crypto模块使用.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
-                            </div>
-                        
-                    </div>
-                
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a>
-        </h1>
-    
-
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-        
-            
-                
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                    
-                    
-                
-                
-                    
-                    <p><ul>
-<li>目录
-{:toc}</li>
-</ul>
-</p><h1 id="Node版本-v0-10-20-API-Stability-2-Unstable-1"><a href="#Node版本-v0-10-20-API-Stability-2-Unstable-1" class="headerlink" title="Node版本: v0.10.20 (API Stability: 2 - Unstable) 1"></a>Node版本: v0.10.20 (API Stability: 2 - Unstable) <sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></h1><h1 id="公钥私钥的签名和验证"><a href="#公钥私钥的签名和验证" class="headerlink" title="公钥私钥的签名和验证"></a>公钥私钥的签名和验证</h1><p>用 ssh 的公私钥做例子。
-</p><p>
-                
-            
-        
-        
-            </p></div>   
-            <div class="article-more-link">
-                <a href="/nodejs/crypto模块使用/#more">查看更多</a>
-            </div>
-        
-        <footer class="article-footer">
-        </footer>
-    </div>
-</article>
-
-
-
-
-
-
-    
-        <article id="post-android/window-system" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-                    <div class="article-meta">
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/android/">android</a>
-    </div>
-
-                        
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/android/window-system/">
-            <time datetime="2013-11-07T07:20:00.000Z" itemprop="datePublished">2013-11-07</time>
-        </a>
-    </div>
-
-
-                        
-                            <i class="fa fa-bar-chart"></i>
-                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
-                        
-                        
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/window-system.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/window-system.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
-                            </div>
-                            <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/window-system.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
-                            </div>
-                        
-                    </div>
-                
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/android/window-system/">Android 窗口系统 源码分析</a>
-        </h1>
-    
-
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-        
-            
-                
-                <p></p><h1 id="版本-android-4-3-r2-2"><a href="#版本-android-4-3-r2-2" class="headerlink" title="版本 android-4.3_r2.2"></a>版本 android-4.3_r2.2</h1><h1 id="涉及到的文件"><a href="#涉及到的文件" class="headerlink" title="涉及到的文件"></a>涉及到的文件</h1><h1 id="SystemServer进程"><a href="#SystemServer进程" class="headerlink" title="SystemServer进程"></a>SystemServer进程</h1><h1 id="应用进程"><a href="#应用进程" class="headerlink" title="应用进程"></a>应用进程</h1><p></p>
-            
-        
-        
-            </div>   
-            <div class="article-more-link">
-                <a href="/android/window-system/#more">查看更多</a>
             </div>
         
         <footer class="article-footer">

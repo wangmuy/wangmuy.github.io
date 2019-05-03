@@ -3,19 +3,23 @@
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
     
-    <title>归档 | wangmuy 的技术博客</title>
+    <title>PackageInstaller 中的 动态权限 | wangmuy 的技术博客</title>
     
     
-        <meta name="keywords" content="wangmuy 的技术博客">
+        <meta name="keywords" content="PackageInstaller 中的 动态权限">
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="wangmuy 的技术博客">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+    <meta name="description" content="manifest统计1234567891011121314151617.PackageInstallerActivityaction=&amp;quot;android.content.pm.action.CONFIRM_PERMISSIONS&amp;quot;category=&amp;quot;android.intent.category.DEFAULT&amp;quot;.permission.ui.GrantPerm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PackageInstaller 中的 动态权限">
+<meta property="og:url" content="http://yoursite.com/android/package-installer-动态权限/index.html">
 <meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="manifest统计1234567891011121314151617.PackageInstallerActivityaction=&amp;quot;android.content.pm.action.CONFIRM_PERMISSIONS&amp;quot;category=&amp;quot;android.intent.category.DEFAULT&amp;quot;.permission.ui.GrantPerm">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-03T13:51:20.710Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="wangmuy 的技术博客">
+<meta name="twitter:title" content="PackageInstaller 中的 动态权限">
+<meta name="twitter:description" content="manifest统计1234567891011121314151617.PackageInstallerActivityaction=&amp;quot;android.content.pm.action.CONFIRM_PERMISSIONS&amp;quot;category=&amp;quot;android.intent.category.DEFAULT&amp;quot;.permission.ui.GrantPerm">
     
 
     
@@ -156,13 +160,13 @@
         
         
          <ul class="unstyled" id="tree"> 
-                    <li class="directory">
+                    <li class="directory open">
                         <a href="#" data-role="directory">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-folder-open"></i>
                             &nbsp;
                             android
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  <li class="file"><a href="/android/aapt/">aapt 源码分析</a></li>  <li class="file"><a href="/android/debug-hwui-profile/">Android debug-hwui-profile</a></li>  <li class="file"><a href="/android/resolve-activity/">ResolverActivity 流程</a></li>  <li class="file"><a href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a></li>  <li class="file"><a href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  <li class="file"><a href="/android/aapt/">aapt 源码分析</a></li>  <li class="file"><a href="/android/debug-hwui-profile/">Android debug-hwui-profile</a></li>  <li class="file"><a href="/android/resolve-activity/">ResolverActivity 流程</a></li>  <li class="file active"><a href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a></li>  <li class="file"><a href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -271,193 +275,114 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><div class="timeline timeline-wrap">
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar-o"></i></span>
-                <h1 class="title"><a href="/archives/2016/">2016</a></h1>
-            </div>
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2016/12/">2016-12</a><span class="archive-list-count">1</span></h1>
-            </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-android/package-installer-动态权限" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/package-installer-动态权限/">
+            <time datetime="2016-11-29T02:57:43.000Z" itemprop="datePublished">2016-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/package-installer-动态权限.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/package-installer-动态权限.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/package-installer-动态权限.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a>
+        <h1 class="article-title" itemprop="name">
+            PackageInstaller 中的 动态权限
         </h1>
     
 
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="manifest统计"><a href="#manifest统计" class="headerlink" title="manifest统计"></a>manifest统计</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.PackageInstallerActivity</span><br><span class="line">action=&quot;android.content.pm.action.CONFIRM_PERMISSIONS&quot;</span><br><span class="line">category=&quot;android.intent.category.DEFAULT&quot;</span><br><span class="line"></span><br><span class="line">.permission.ui.GrantPermissionsActivity</span><br><span class="line">action=&quot;android.content.pm.action.REQUEST_PERMISSIONS&quot;</span><br><span class="line">category=&quot;android.intent.category.DEFAULT&quot;</span><br><span class="line"></span><br><span class="line">.permission.ui.ManagePermissionsActivity</span><br><span class="line">action=&quot;android.intent.action.MANAGE_PERMISSIONS&quot;</span><br><span class="line">action=&quot;android.intent.action.MANAGE_APP_PERMISSIONS&quot;</span><br><span class="line">action=&quot;android.intent.action.MANAGE_PERMISSION_APPS&quot;</span><br><span class="line">category=&quot;android.intent.category.DEFAULT&quot;</span><br><span class="line"></span><br><span class="line">receiver=&quot;.permission.model.PermissionStatusReceiver&quot;</span><br><span class="line">android:permission=&quot;android.permission.GRANT_RUNTIME_PERMISSIONS&quot;</span><br><span class="line">intent-filter action=&quot;android.intent.action.GET_PERMISSIONS_COUNT&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="PackageInstallerActivity"><a href="#PackageInstallerActivity" class="headerlink" title="PackageInstallerActivity"></a>PackageInstallerActivity</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">入口activity</span><br><span class="line">CONFIRM_PERMISSIONS 通过session进来, 记住sessionId, 选择后回调给session mInstaller.setPermissionsResult()</span><br></pre></td></tr></table></figure>
+<h1 id="GrantPermissionsActivity"><a href="#GrantPermissionsActivity" class="headerlink" title="GrantPermissionsActivity"></a>GrantPermissionsActivity</h1><ul>
+<li>应用主动申请权限时出现的授权界面</li>
+<li>授权权限按组进行</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 初始化 updateDefaultResults() deny all</span><br><span class="line">2. devicePolicyManager.getPermissionPolicy() 获取默认permission类型(STATE_DEFAULT运行时/AUTO_DENY/AUTO_GRANT)</span><br><span class="line">根据 permissionPlicy 自动授权 AUTO_DENY/AUTO_GRANT 给 non-fixed( !group.isUserFixed() &amp;&amp; !group.isPolicyFixed())类型的权限</span><br><span class="line">3. 剩下的STATE_DEFAULT类型更新界面让用户授权</span><br></pre></td></tr></table></figure>
+<h1 id="ManagePermissionsActivity"><a href="#ManagePermissionsActivity" class="headerlink" title="ManagePermissionsActivity"></a>ManagePermissionsActivity</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">action=&quot;android.intent.action.MANAGE_PERMISSIONS&quot;</span><br><span class="line">ManagePermissionsFragment</span><br><span class="line"></span><br><span class="line">action=&quot;android.intent.action.MANAGE_APP_PERMISSIONS&quot;</span><br><span class="line">AppPermissionsFragment</span><br><span class="line"></span><br><span class="line">action=&quot;android.intent.action.MANAGE_PERMISSION_APPS&quot;</span><br><span class="line">PermissionAppsFragment</span><br></pre></td></tr></table></figure>
+<h1 id="PermissionStatusReceiver"><a href="#PermissionStatusReceiver" class="headerlink" title="PermissionStatusReceiver"></a>PermissionStatusReceiver</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当有 Intent.ACTION_GET_PERMISSIONS_COUNT 广播询问时, 获取对应的package授权权限数量, 广播反馈</span><br><span class="line">/packages/apps/Settings 用到</span><br></pre></td></tr></table></figure>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/android/activity-透明非透明-转换/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Activity 透明/非透明 转换
                 
             </div>
-        </div>
+        </a>
     
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2016/11/">2016-11</a><span class="archive-list-count">2</span></h1>
-            </div>
     
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
+        <a href="/android/resolve-activity/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">ResolverActivity 流程</div>
+        </a>
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a>
-        </h1>
+</nav>
+
+
+
+
+
+    
     
 
-                
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/resolve-activity/">ResolverActivity 流程</a>
-        </h1>
-    
 
-                
-            </div>
-        </div>
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2016/10/">2016-10</a><span class="archive-list-count">1</span></h1>
-            </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/debug-hwui-profile/">Android debug-hwui-profile</a>
-        </h1>
-    
 
-                
-            </div>
-        </div>
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2016/09/">2016-09</a><span class="archive-list-count">3</span></h1>
-            </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/aapt/">aapt 源码分析</a>
-        </h1>
-    
 
-                
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/misc/plantuml基础/">PlantUML 基础</a>
-        </h1>
-    
-
-                
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/fresco/">Fresco 源码分析</a>
-        </h1>
-    
-
-                
-            </div>
-        </div>
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2016/07/">2016-07</a><span class="archive-list-count">2</span></h1>
-            </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/misc/duilib使用/">duilib使用小结</a>
-        </h1>
-    
-
-                
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/android/build-system/">Android 构建系统 源码分析</a>
-        </h1>
-    
-
-                
-            </div>
-        </div>
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar-o"></i></span>
-                <h1 class="title"><a href="/archives/2015/">2015</a></h1>
-            </div>
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title"><a href="/archives/2015/01/">2015-01</a><span class="archive-list-count">1</span></h1>
-            </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a>
-        </h1>
-    
-
-                
-            </div>
-        </div>
-    
-</div>
-
-    <nav id="page-nav">
-        <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">下一页 &raquo;</a>
-    </nav>
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
 </section>
         </div>
         <footer id="footer">
