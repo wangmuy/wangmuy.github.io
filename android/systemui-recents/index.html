@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    
+    <title>SystemUI 最近应用 源码分析 | wangmuy 的技术博客</title>
+    
+    
+        <meta name="keywords" content="SystemUI 最近应用 源码分析">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="版本: android-6.0.0_r1初始化12345RecentsTaskLoader.initialize() &amp;#123;  初始化 mApplicationIconCache/mThumbnailCache/mActivityLabelCache/mContentDescriptionCache  mLoadQueue = new TaskResourceLoadQueue()  new">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SystemUI 最近应用 源码分析">
+<meta property="og:url" content="http://yoursite.com/android/systemui-recents/index.html">
+<meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="版本: android-6.0.0_r1初始化12345RecentsTaskLoader.initialize() &amp;#123;  初始化 mApplicationIconCache/mThumbnailCache/mActivityLabelCache/mContentDescriptionCache  mLoadQueue = new TaskResourceLoadQueue()  new">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-03T14:09:17.722Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SystemUI 最近应用 源码分析">
+<meta name="twitter:description" content="版本: android-6.0.0_r1初始化12345RecentsTaskLoader.initialize() &amp;#123;  初始化 mApplicationIconCache/mThumbnailCache/mActivityLabelCache/mContentDescriptionCache  mLoadQueue = new TaskResourceLoadQueue()  new">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="wangmuy 的技术博客" type="application/atom+xml">
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+</head>
+</html>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">wangmuy 的技术博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            android
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  <li class="file"><a href="/android/aapt/">aapt 源码分析</a></li>  <li class="file"><a href="/android/debug-hwui-profile/">Android debug-hwui-profile</a></li>  <li class="file"><a href="/android/resolve-activity/">ResolverActivity 流程</a></li>  <li class="file"><a href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a></li>  <li class="file"><a href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a></li>  <li class="file active"><a href="/android/systemui-recents/">SystemUI 最近应用 源码分析</a></li>  <li class="file"><a href="/android/repo-refs-m分析/">repo refs/remotes/m 来源分析</a></li>  <li class="file"><a href="/android/uiautomator-启动流程/">uiautomator 启动流程</a></li>  <li class="file"><a href="/android/alert-window-权限控制/">Alert Window 弹窗控制</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            libgdx
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            misc
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/misc/duilib使用/">duilib使用小结</a></li>  <li class="file"><a href="/misc/plantuml基础/">PlantUML 基础</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            mldl
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/mldl/torch-windows-build/">Torch windows 编译</a></li>  <li class="file"><a href="/mldl/tensorflow-core_rnn_cell-源码分析/">tensorflow rnn embedding</a></li>  <li class="file"><a href="/misc/keras-examples/">keras examples 总结</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            nodejs
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            博客搭建
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/博客搭建/octopress-setup/">用Octopress在GitHub上搭建博客</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-android/systemui-recents" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/android/">android</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/android/systemui-recents/">
+            <time datetime="2017-01-04T06:38:43.000Z" itemprop="datePublished">2017-01-04</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/android/systemui-recents.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/android/systemui-recents.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/android/systemui-recents.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            SystemUI 最近应用 源码分析
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="版本-android-6-0-0-r1"><a href="#版本-android-6-0-0-r1" class="headerlink" title="版本: android-6.0.0_r1"></a>版本: android-6.0.0_r1</h1><h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RecentsTaskLoader.initialize() &#123;</span><br><span class="line">  初始化 mApplicationIconCache/mThumbnailCache/mActivityLabelCache/mContentDescriptionCache</span><br><span class="line">  mLoadQueue = new TaskResourceLoadQueue()</span><br><span class="line">  new TaskResourceLoader(mLoadQueue) &#123;用HandlerThread起LoaderThread, post自身(Runnable)&#125; &#125;</span><br><span class="line">&lt;- Recents.start() systemui启动时各模块初始化调用</span><br></pre></td></tr></table></figure>
+<h1 id="TaskResourceLoader-mLoadThread-加载线程"><a href="#TaskResourceLoader-mLoadThread-加载线程" class="headerlink" title="TaskResourceLoader.mLoadThread 加载线程"></a>TaskResourceLoader.mLoadThread 加载线程</h1><ul>
+<li>逐个加载推到 mLoadQueue的 Task的相关内容 icon/thumbnail/label</li>
+<li>加载完调用 (Task t).notifyTaskDataLoaded(thumbnail, icon) 通知更新</li>
+</ul>
+<h1 id="加载Task"><a href="#加载Task" class="headerlink" title="加载Task"></a>加载Task</h1><h2 id="加载所有task"><a href="#加载所有task" class="headerlink" title="加载所有task"></a>加载所有task</h2><p>每次加载所有task都使用一个 plan</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1. RecentTaskLoader.loadTasks(ctx, plan, opts)</span><br><span class="line">opts.numVisibleTasks 控制plan加载时是否加载icon, opts.numVisibleTaskThumbnails 控制plan加载时是否加载thumbnail</span><br><span class="line">1.1. &lt;- Recents.start() 最先调用</span><br><span class="line">1.2. &lt;- RecentsActivity.updateRecentsTasks() 启动最近应用时调用, 消费Recents.sInstanceLoadPlan</span><br><span class="line">  &lt;- RecentsActivity.onStart()</span><br><span class="line">1.3. &lt;- Recents.preloadIcon()</span><br><span class="line">  1.3.1. &lt;- Recents.getThumbnailTransitionActivityOptions() 没有thumbnailTransitionBitmapCache或不匹配时</span><br><span class="line">    &lt;- Recents.startRecentsActivity() if(useThumbnailTransition) 获取用来切换acitivity用</span><br><span class="line">  1.3.2. &lt;- Recents.preCacheThumbnailTransitionBitmapAsync()</span><br><span class="line">    &lt;- Recents.preloadRecentsInternal() &#123; 预加载 sInstanceLoadPlan(将来被RecentsActivity消费); if(topTask有变化) preCacheThumbnailTransitionBitmapAsync() &#125;</span><br><span class="line">    &lt;- Recents.preloadRecents() if user是owner</span><br><span class="line">    &lt;- BaseStatusBar.preloadRecents()</span><br><span class="line">    1.3.2.1 &lt;- BaseStatusBar.mRecentsPreloadOnTouchListener() navBar的最近应用按钮响应</span><br><span class="line">    1.3.2.2 &lt;- (Handler H) BaseStatusBar.preloadRecentApps() 用于响应IstatusBar binder调用</span><br><span class="line">1.4. &lt;- TaskStackListenerImpl.run()</span><br></pre></td></tr></table></figure>
+<h2 id="加载单个task"><a href="#加载单个task" class="headerlink" title="加载单个task"></a>加载单个task</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">2. RecentTaskLoader.loadTaskData(Task t) &#123;</span><br><span class="line">    requiresLoad = (applicationIcon==null 或 thumbnail==null)</span><br><span class="line">    if(requiresLoad) mLoadQueue.addTask(t)</span><br><span class="line">    t.notifyTaskDataLoaded() 先通知更新, 可能为默认图, 后面LoaderThread加载完还有通知</span><br><span class="line">&#125;</span><br><span class="line">&lt;- TaskStackView.prepareViewToLeavePool(taskView, task, isNewView)</span><br><span class="line">&lt;- ViewPool.pickUpViewFromPool()</span><br><span class="line">2.1. &lt;- TaskStackView.synchronizeStackViewsWithModel()</span><br><span class="line">  2.1.1 TaskStackView.computeScroll()</span><br><span class="line">  2.1.2 TaskStackView.onMeasure() &#123; if(mAwaitingFirstLayout) synchronizeStackViewsWithModel() &#125;</span><br><span class="line">  2处都是view的函数重载</span><br><span class="line">2.2. &lt;- TaskStackViewFilterAlgorithm.getEnterTransformsForFilterAnimation()</span><br></pre></td></tr></table></figure>
+<h2 id="taskStack-变化监听"><a href="#taskStack-变化监听" class="headerlink" title="taskStack 变化监听"></a>taskStack 变化监听</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">注册</span><br><span class="line">Recents.start() &#123;</span><br><span class="line">  mSystemServiceProxy.registerTaskStackListener(new TaskStackListenerImpl())</span><br><span class="line">&#125;</span><br><span class="line">-&gt; SystemServiceProxy.registerTaskStackListener(l) &#123; mIam.registerTaskStackListener(l) &#125;</span><br><span class="line"></span><br><span class="line">变化</span><br><span class="line">TaskStackListenerImpl.onTaskStackChanged() &#123; mHandler.post(this) &#125;</span><br><span class="line">--SystemUIService主线程handler--&gt; TaskStackListenerImpl.run()</span><br></pre></td></tr></table></figure>
+<h2 id="保存-加载-taskRecord"><a href="#保存-加载-taskRecord" class="headerlink" title="保存/加载 taskRecord"></a>保存/加载 taskRecord</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TaskRecord.saveToXml()</span><br><span class="line"></span><br><span class="line">TaskRecord.restoreFromXml() &#123; ActivityRecord.restoreFromXml() &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AMS.startActivityFromRecents()</span><br><span class="line">-&gt; AMS.startActivityFromRecentsInner()</span><br></pre></td></tr></table></figure>
+<h2 id="截屏大小"><a href="#截屏大小" class="headerlink" title="截屏大小"></a>截屏大小</h2><p>frameworks/base/core/res/res/values-sw720dp/dimens.xml 添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"thumbnail_width"</span>&gt;</span>1280dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">"thumbnail_height"</span>&gt;</span>720dp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="长按启动"><a href="#长按启动" class="headerlink" title="长按启动"></a>长按启动</h2><p>frameworks/base/core/res/res/values-sw720dp/config.xml 添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">integer</span> <span class="attr">name</span>=<span class="string">"config_longPressOnHomeBehavior"</span>&gt;</span>1<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="activity-按-back-键所走的流程"><a href="#activity-按-back-键所走的流程" class="headerlink" title="activity 按 back 键所走的流程"></a>activity 按 back 键所走的流程</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">按键down: Activity.onKeyDown(keyCode, event) &#123;event.startTracking();&#125;</span><br><span class="line">按键up: Activity.onKeyUp(keyCode, event) &#123;event.isTracking(): onBackPressed()&#125;</span><br><span class="line"></span><br><span class="line">Activity.onBackPressed() -&gt; Activity.finishAfterTransition() -&gt; Activity.finish()</span><br><span class="line">-&gt; Activity.finish(finishTask==false) 最后到 mParent==null: ActivityManagerNative.getDefault().finishActivity()</span><br><span class="line">--binder--&gt; AMS.finishActivity(token, resultCode, resultData, finishTask==false) &#123;</span><br><span class="line">  若同task仍有activity: mController.activityResuming(next.packageName)</span><br><span class="line">  finishTask==false: (TaskRecord tr).stack.requestFinishActivityLocked(token, resultCode, resultData, &quot;app-request&quot;, true) &#125;</span><br><span class="line">-&gt; ActivityStack.finishActivityLocked((当前的 ActivityRecord r), resultCode, resultData, reason, oomAdj) &#123;</span><br><span class="line">     adjustFocusedActivityLocked(r, &quot;finishActivity&quot;)</span><br><span class="line">     finishActivityResultLocked(r, resultCode, resultData)</span><br><span class="line">&#125;</span><br><span class="line">  -&gt; ActivityStack.adjustFocusedActivityLocked(ActivityRecord r, String reason) &#123;</span><br><span class="line">    myReason = reason + &quot; adjustFocus&quot;</span><br><span class="line">    // 当前stack是frontStack(top或可见), AMS当前焦点activity是r</span><br><span class="line">    mStackSupervisor.isFrontStack(this) &amp;&amp; (AMS mService).mFocusedActivity == r):</span><br><span class="line">      ActivityRecord next = topRunningActivityLocked(null) 该stack当前的top task的top running activity, 已排除 finishing</span><br><span class="line">      r.frontOfTask &amp;&amp; task == topTask() &amp;&amp; task.isOverHomeStack():</span><br><span class="line">        if 本stack非全屏: adjustFocusedToNextVisibleStackLocked(null, myReason)</span><br><span class="line">        否则 mStackSupervisor.moveHomeStackTaskToTop(task.getTaskToReturnTo(), myReason)</span><br><span class="line">      重新设置到AMS</span><br><span class="line">      ActivityRecord top = mStackSupervisor.topRunningActivityLocked()</span><br><span class="line">      (AMS mService).setFocusedActivityLocked(top, myReason)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">TaskRecord.mTaskToReturnTo 表示task销毁时返回的目标, 有</span><br><span class="line">* APPLICATION_ACTIVITY_TYPE=0 返回到 本task 下方的task</span><br><span class="line">* HOME_ACTIVITY_TYPE=1 返回到HOME</span><br><span class="line">* RECENTS_ACTIVITY_TYPE=2 返回到 recents</span><br><span class="line"></span><br><span class="line">初始化:</span><br><span class="line">field初始化为 APPLICATION_ACTIVITY_TYPE, 默认ctor初始化为 HOME_ACTIVITY_TYPE, voiceInteractor ctor保留field初始化值</span><br><span class="line"></span><br><span class="line">TaskRecord.setTaskToReturnTo(int)</span><br><span class="line">1. &lt;- AMS.moveTaskToFrontLocked(taskId, flags, options) &#123;</span><br><span class="line">  task = mStackSupervisor.anyTaskForId(taskId); if 当前的 topRunningActivity == 最近应用: task.setTaskToReturnTo(RECENTS_ACTIVITY_TYPE) &#125; 总结: moveTaskToFront() 时 设置返回到 最近应用</span><br><span class="line">2. &lt;- ActivityStackSupervisor.resumeHomeStackTask(homeStackTaskType, prev, reason) &#123;</span><br><span class="line">  prev != null: prev.task.setTaskToReturnTo(APPLICATION_ACTIVITY_TYPE)</span><br><span class="line">  &#125;</span><br><span class="line">3. &lt;- ASS.startActivityUncheckedLocked() &#123; line:2116</span><br><span class="line">    launchFlags &amp; (Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK) != 0 或 launchSingleInstance 或 launchSingleTask:</span><br><span class="line">      if(没有要求lauch到某个task &amp;&amp; 没有要result reply) &amp;&amp; 找到已有的task</span><br><span class="line">        &amp;&amp; 当前 (ActivityRecord curTop) 非空 &amp;&amp; curTop.task != (ActivityRecord 要启动的 intentActivity).task</span><br><span class="line">        &amp;&amp; (找不到启动来源(sourceRecord == null) || 启动来源是topActivity)</span><br><span class="line">        &amp;&amp; (launchFlags &amp; (FLAG_ACTIVITY_NEW_TASK|FLAG_ACTIVITY_TASK_ON_HOME) != 0):</span><br><span class="line">          movedHome = true</span><br><span class="line">          intentActivity.task.setTaskToReturnTo(HOME_ACTIVITY_TYPE)</span><br><span class="line">    总结: TASK_ON_HOME启动时 设置返回到 HOME</span><br><span class="line">&#125;</span><br><span class="line">4. &lt;- ASS.startActivityUncheckedLocked() &#123; line:2334</span><br><span class="line">    if(!movedHome) &amp;&amp; launchFlags &amp; (NEW_TASK|TASK_ON_HOME) != 0:</span><br><span class="line">      r.task.setTaskToReturnTo(HOME_ACTIVITY_TYPE)</span><br><span class="line">&#125; 总结: TASK_ON_HOME启动时 设置返回到 HOME</span><br><span class="line">5. &lt;- ASS.startActivityUncheckedLocked() &#123; line:2452</span><br><span class="line">    if 启动来源 是 最近应用:</span><br><span class="line">      r.task.setTaskToReturnTo(RECENTS_ACTIVITY_TYPE)</span><br><span class="line">&#125; 总结: 启动来源 是 最近应用 时 设置返回到 最近应用</span><br><span class="line">6. &lt;- ASS.findTaskToMoveToFrontLocked() &#123;</span><br><span class="line">    if flags &amp; ActivityManager.MOVE_TASK_WITH_HOME:</span><br><span class="line">      task.setTaskToReturnTo(HOME_ACTIVITY_TYPE)</span><br><span class="line">&#125;</span><br><span class="line">7. &lt;- ActivityStack.resumeTopActivityInnerLocked(prev, bundle) &#123; line:1637</span><br><span class="line">    nextTask = topRunningActivityLocked().task</span><br><span class="line">    if prevTask != nextTask &amp;&amp; prevTask != topTask():</span><br><span class="line">      taskNdx = mTaskHistory.indexOf(prevTask) + 1</span><br><span class="line">      mTaskHistory.get(taskNdx).setTaskToReturnTo(HOME_ACTIVITY_TYPE)</span><br><span class="line">&#125; 总结: resumeTopActivity 时 prevTask != topTask 设置prevTask顶上那个task 返回到 HOME</span><br><span class="line">8. &lt;- AS.insertTaskAtTop(task, newActivity) &#123; line:2033</span><br><span class="line">    if task.isOverHomeStack() &amp;&amp; nextTask != null:</span><br><span class="line">      nextTask.setTaskToReturnTo(task.getTaskToReturnTo())</span><br><span class="line">&#125; 总结: 要插入到top的task 原来的nextTask 也返回到 task.getTaskToReturnTo()</span><br><span class="line">9. &lt;- AS.insertTaskAtTop(task, newActivity) &#123; line:2043</span><br><span class="line">    if isOnHomeDisplay():</span><br><span class="line">      fromHome = lastStack.isHomeStack() 上次焦点stack</span><br><span class="line">      if !isHomeStack() &amp;&amp; (fromHome || topTask() != task):</span><br><span class="line">        task.setTaskToReturnTo(fromHome? lastStack.topTask() == null? HOME_ACTIVITY_TYPE : lastStack.topTask().taskType : APPLICATION_ACTIVITY_TYPE)</span><br><span class="line">    else:</span><br><span class="line">      task.setTaskToReturnTo(APPLICATION_ACTIVITY_TYPE)</span><br><span class="line">&#125;</span><br><span class="line">10. &lt;- AS.moveTaskToBackLocked(taskId) &#123; line:3751</span><br><span class="line">    canGoHome = !tr.isHomeStack() &amp;&amp; tr.isOverHomeStack()</span><br><span class="line">    if canGoHome:</span><br><span class="line">      nextTask.setTaskToReturnTo(tr.getTaskToReturnTo())</span><br><span class="line">&#125; 总结: if canGoHome 设置 要移动的task 原来的nextTask 返回到 task.getTaskToReturnTo()</span><br><span class="line">11. &lt;- AS.moveTaskToBackLocked(taskId) &#123; line:3770</span><br><span class="line">    遍历 mTaskHistory, 确保至少有一个task(自身)可以返回到home</span><br><span class="line">    if(taskNdx == 1): task.setTaskToReturnTo(HOME_ACTIVITY_TYPE)</span><br><span class="line">&#125;</span><br><span class="line">12. &lt;- AS.moveTaskToBackLocked(taskId) &#123; line:3788</span><br><span class="line">    if(prevIsHome || (task == tr &amp;&amp; canGoHome) || (numTasks &lt;= 1 &amp;&amp; isOnHomeDisplay())):</span><br><span class="line">      taskToReturnTo = tr.getTaskToReturnTo()</span><br><span class="line">      tr.setTaskToReturnTo(APPLICATION_ACTIVITY_TYPE)</span><br><span class="line">      return mStackSupervisor.resumeHomeStack(taskToReturnTo, null, &quot;moveTaskToBack&quot;)</span><br><span class="line">&#125;</span><br><span class="line">13. &lt;- AS.removeTask(task, reason, notMoving) &#123; line:4306</span><br><span class="line">    if task.isOverHomeStack() &amp;&amp; taskNdx &lt; topTask &amp;&amp; !nextTask.isOverHomeStack():</span><br><span class="line">        nextTask.setTaskToRetrunTo(HOME_ACTIVITY_TYPE)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="BluetoothControllerImpl"><a href="#BluetoothControllerImpl" class="headerlink" title="BluetoothControllerImpl"></a>BluetoothControllerImpl</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>updateInfo() 调用线程不一致问题 导致的 NPE</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">BCI.handleConnectionChange()</span><br><span class="line">1. &lt;-- BCI.handleUpdateConnectionStates()</span><br><span class="line">  1.1 &lt;- (BCI.H BCI.mHandler) MSG_UPDATE_CONNECTION_STATES</span><br><span class="line">  1.2 &lt;- (BCI.H BCI.mHandler) MSG_ADD_PROFILE</span><br><span class="line">  1.3 &lt;- (BCI.H BCI.mHandler) MSG_REM_PROFILE</span><br><span class="line">2. &lt;--handler-- (BCI.H BCI.mHandler) MSG_UPDATE_SINGLE_CONNECTION_STATE 构造函数传入的bgLooper, 即 PhoneStatusBar 传入的 mHandlerThread.getLooper()</span><br><span class="line"></span><br><span class="line">BCI.updateInfo() 保证 ArrayMap mDeviceInfo 键值对不为null</span><br><span class="line">1. &lt;- BCI.handleUpdateBondedDevices()</span><br><span class="line">  &lt;- (BCI.H BCI.mHandler) MSG_UPDATE_BONDED_DEVICES</span><br><span class="line">2. &lt;- BCI.handleUpdateConnectionStates()</span><br><span class="line">3. &lt;- BCI.handleUpdateConnectionState()</span><br><span class="line">  3.1 &lt;- BCI.handleUpdateConnectionStates()</span><br><span class="line">  3.2 &lt;- (BCI.H BCI.mHandler) MSG_UPDATE_SINGLE_CONNECTION_STATE</span><br><span class="line">4. &lt;- BCI.Receiver.onReceive() 跑在 receiver 回调线程. BCI.Receiver.ctor() 中 mContext.registerReceiver(this, filter) 指定了在ui主线程</span><br></pre></td></tr></table></figure>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>mContext.registerReceiver(this, filter, null, mHandler) 指定在handler(bgLooper)线程</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/mldl/torch-windows-build/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Torch windows 编译
+                
+            </div>
+        </a>
+    
+    
+        <a href="/android/activity-透明非透明-转换/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Activity 透明/非透明 转换</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Wangmuy &copy; 2019 
+            <a rel="external nofollow noopener noreferrer" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten" rel="external nofollow noopener noreferrer" target="_blank">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>

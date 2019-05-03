@@ -2,6 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/misc/keras-examples/</loc>
+    
+    <lastmod>2019-05-03T14:25:36.199Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/mldl/tensorflow-core_rnn_cell-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2019-05-03T14:23:26.528Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/alert-window-%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/</loc>
+    
+    <lastmod>2019-05-03T14:20:46.156Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/uiautomator-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</loc>
+    
+    <lastmod>2019-05-03T14:16:07.877Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/repo-refs-m%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2019-05-03T14:13:13.199Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/mldl/torch-windows-build/</loc>
+    
+    <lastmod>2019-05-03T14:11:24.417Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/android/systemui-recents/</loc>
+    
+    <lastmod>2019-05-03T14:09:17.722Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/android/activity-%E9%80%8F%E6%98%8E%E9%9D%9E%E9%80%8F%E6%98%8E-%E8%BD%AC%E6%8D%A2/</loc>
     
     <lastmod>2019-05-03T13:53:01.096Z</lastmod>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    
+    <title>keras examples 总结 | wangmuy 的技术博客</title>
+    
+    
+        <meta name="keywords" content="keras examples 总结">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="NLPimdb 评论分类目标: 划分 imdb 评论电影好坏 imdb_bidirectional_lstm.py 方案  123Densebidirectional lstmEmbedding  超参数  1234567sentence len     = 100vocab size       = 20000embedding size   = 128lstm unroll      = 64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="keras examples 总结">
+<meta property="og:url" content="http://yoursite.com/misc/keras-examples/index.html">
+<meta property="og:site_name" content="wangmuy 的技术博客">
+<meta property="og:description" content="NLPimdb 评论分类目标: 划分 imdb 评论电影好坏 imdb_bidirectional_lstm.py 方案  123Densebidirectional lstmEmbedding  超参数  1234567sentence len     = 100vocab size       = 20000embedding size   = 128lstm unroll      = 64">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-03T14:25:36.199Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="keras examples 总结">
+<meta name="twitter:description" content="NLPimdb 评论分类目标: 划分 imdb 评论电影好坏 imdb_bidirectional_lstm.py 方案  123Densebidirectional lstmEmbedding  超参数  1234567sentence len     = 100vocab size       = 20000embedding size   = 128lstm unroll      = 64">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="wangmuy 的技术博客" type="application/atom+xml">
+    
+
+    
+        <link rel="icon" href="/favicon.ico">
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+</head>
+</html>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">wangmuy 的技术博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>分类</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            android
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/android/input-system/">Android 输入系统 源码分析</a></li>  <li class="file"><a href="/android/window-system/">Android 窗口系统 源码分析</a></li>  <li class="file"><a href="/android/startup-routines/">Android 启动流程 源码分析</a></li>  <li class="file"><a href="/android/recyclerview/">RecyclerView 源码分析</a></li>  <li class="file"><a href="/android/build-system/">Android 构建系统 源码分析</a></li>  <li class="file"><a href="/android/fresco/">Fresco 源码分析</a></li>  <li class="file"><a href="/android/aapt/">aapt 源码分析</a></li>  <li class="file"><a href="/android/debug-hwui-profile/">Android debug-hwui-profile</a></li>  <li class="file"><a href="/android/resolve-activity/">ResolverActivity 流程</a></li>  <li class="file"><a href="/android/package-installer-动态权限/">PackageInstaller 中的 动态权限</a></li>  <li class="file"><a href="/android/activity-透明非透明-转换/">Activity 透明/非透明 转换</a></li>  <li class="file"><a href="/android/systemui-recents/">SystemUI 最近应用 源码分析</a></li>  <li class="file"><a href="/android/repo-refs-m分析/">repo refs/remotes/m 来源分析</a></li>  <li class="file"><a href="/android/uiautomator-启动流程/">uiautomator 启动流程</a></li>  <li class="file"><a href="/android/alert-window-权限控制/">Alert Window 弹窗控制</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            libgdx
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/libgdx/skin-load/">LibGDX skin load 源码分析</a></li>  <li class="file"><a href="/libgdx/dynamic-freetype/">LibGDX 实现 动态中文/freetype 加载</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            misc
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/misc/duilib使用/">duilib使用小结</a></li>  <li class="file"><a href="/misc/plantuml基础/">PlantUML 基础</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            mldl
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/mldl/torch-windows-build/">Torch windows 编译</a></li>  <li class="file"><a href="/mldl/tensorflow-core_rnn_cell-源码分析/">tensorflow rnn embedding</a></li>  <li class="file active"><a href="/misc/keras-examples/">keras examples 总结</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            nodejs
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/nodejs/crypto模块使用/">Node.js Crypto模块 使用示例</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            博客搭建
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/博客搭建/octopress-setup/">用Octopress在GitHub上搭建博客</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            });  
+        });
+    </script>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+            <section id="main"><article id="post-misc/keras-examples" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/mldl/">mldl</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/misc/keras-examples/">
+            <time datetime="2017-09-07T07:55:18.000Z" itemprop="datePublished">2017-09-07</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/misc/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/misc/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/misc/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            keras examples 总结
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+        
+        
+            <h1 id="NLP"><a href="#NLP" class="headerlink" title="NLP"></a>NLP</h1><h2 id="imdb-评论分类"><a href="#imdb-评论分类" class="headerlink" title="imdb 评论分类"></a>imdb 评论分类</h2><p>目标: 划分 imdb 评论电影好坏</p>
+<h3 id="imdb-bidirectional-lstm-py"><a href="#imdb-bidirectional-lstm-py" class="headerlink" title="imdb_bidirectional_lstm.py"></a>imdb_bidirectional_lstm.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Dense</span><br><span class="line">bidirectional lstm</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sentence len     = 100</span><br><span class="line">vocab size       = 20000</span><br><span class="line">embedding size   = 128</span><br><span class="line">lstm unroll      = 64</span><br><span class="line">lstm dropout     = 0.5</span><br><span class="line">optimizer        = adam</span><br><span class="line">loss = binary_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>~0.8146 after 4 epochs</p>
+<h3 id="imdb-cnn-py"><a href="#imdb-cnn-py" class="headerlink" title="imdb_cnn.py"></a>imdb_cnn.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dense</span><br><span class="line">GlobalMaxPooling1D</span><br><span class="line">Conv1D</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sentence len     = 400</span><br><span class="line">vocab size       = 5000</span><br><span class="line">embedding size   = 50</span><br><span class="line"># filters        = 250</span><br><span class="line">kernel size      = 3</span><br><span class="line">activation       = relu</span><br><span class="line">filter strides   = 1</span><br><span class="line">optimizer        = adam</span><br><span class="line">loss = binary_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>~0.89 after 2 epochs</p>
+<h3 id="imdb-cnn-lstm-py"><a href="#imdb-cnn-lstm-py" class="headerlink" title="imdb_cnn_lstm.py"></a>imdb_cnn_lstm.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dense</span><br><span class="line">LSTM</span><br><span class="line">Conv1D</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sentence len     = 100</span><br><span class="line">vocab size       = 20000</span><br><span class="line">embedding size   = 128</span><br><span class="line"># filters        = 64</span><br><span class="line">kernel size      = 5</span><br><span class="line">activation       = relu</span><br><span class="line">filter strides   = 1</span><br><span class="line">lstm unroll      = 70</span><br><span class="line">optimizer        = adam</span><br><span class="line">loss = binary_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>~0.8498 after 2epochs</p>
+<h3 id="imdb-fasttext-py"><a href="#imdb-fasttext-py" class="headerlink" title="imdb_fasttext.py"></a>imdb_fasttext.py</h3><ul>
+<li>方案
+<a href="https://arxiv.org/abs/1607.01759" rel="external nofollow noopener noreferrer" target="_blank">fasttext</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Dense</span><br><span class="line">GlobalAveragePooling1D</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sentence len     = 400</span><br><span class="line">vocab size       = 20000</span><br><span class="line">embedding size   = 50</span><br><span class="line">if ngram_range &gt; 1: add_ngram() 添加匹配的 ngram 到 x_train/x_test</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>~0.8813 after 5epochs for Uni-gram</p>
+<p>~0.9056 after 5 epochs for Bi-gram</p>
+<h3 id="imdb-lstm-py"><a href="#imdb-lstm-py" class="headerlink" title="imdb_lstm.py"></a>imdb_lstm.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Dense</span><br><span class="line">LSTM</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sentence len     = 80</span><br><span class="line">vocab size       = 20000</span><br><span class="line">embedding size   = 128</span><br><span class="line">optimizer        = adam</span><br><span class="line">loss = binary_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>test set: ~0.8084</p>
+<h3 id="lstm-benchmark-py"><a href="#lstm-benchmark-py" class="headerlink" title="lstm_benchmark.py"></a>lstm_benchmark.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Dense</span><br><span class="line">LSTM(不同实现)</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sentence len     = 80</span><br><span class="line">vocab size       = 20000</span><br><span class="line">embedding size   = 256</span><br><span class="line">optimizer        = adam</span><br><span class="line">loss = binary_crossentropy</span><br><span class="line">for modes in [0, 1, 2]:</span><br><span class="line">  lstm unroll         = 256</span><br><span class="line">  lstm dropout        = 0.2</span><br><span class="line">  lstm implementation = mode</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">model=0: val_acc ~= 0.8108</span><br><span class="line">model=1: val_acc ~= 0.8163</span><br><span class="line">model=2: val_acc ~= 0.7946</span><br></pre></td></tr></table></figure>
+<h2 id="reuters-新闻分类"><a href="#reuters-新闻分类" class="headerlink" title="reuters 新闻分类"></a>reuters 新闻分类</h2><h3 id="reuters-mlp-py"><a href="#reuters-mlp-py" class="headerlink" title="reuters_mlp.py"></a>reuters_mlp.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Dense(10, activation=&apos;softmax&apos;)</span><br><span class="line">Dense(512, activation=&apos;relu&apos;, dropout=0.5)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setence len = 1000</span><br><span class="line">optimizer   = adam</span><br><span class="line">loss = categorical_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>test set: ~0.7911</p>
+<h3 id="reuters-mlp-relu-vs-selu-py"><a href="#reuters-mlp-relu-vs-selu-py" class="headerlink" title="reuters_mlp_relu_vs_selu.py"></a>reuters_mlp_relu_vs_selu.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Dense(num_classes, activation=&apos;softmax&apos;)</span><br><span class="line">n_dense 个 Dense(dense_units, kernel_initializer, activation, dropoutImpl, droput_rate)</span><br><span class="line">Dense(dense_units, kernel_initializer)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">num_classes = 分类个数</span><br><span class="line"></span><br><span class="line">network1:</span><br><span class="line">  n_dense            = 6</span><br><span class="line">  dense_units        = 16</span><br><span class="line">  activation         = relu</span><br><span class="line">  droputImpl         = Dropout</span><br><span class="line">  droptout_rate      = 0.5</span><br><span class="line">  kernel_initializer = glorot_uniform</span><br><span class="line">  optimizer = sgd</span><br><span class="line">  loss = categorical_crossentropy</span><br><span class="line"></span><br><span class="line">network2:</span><br><span class="line">  n_dense            = 6</span><br><span class="line">  dense_units        = 16</span><br><span class="line">  activation         = selu</span><br><span class="line">  droputImpl         = AlphaDropout</span><br><span class="line">  droptout_rate      = 0.1</span><br><span class="line">  kernel_initializer = lecun_normal</span><br><span class="line">  optimizer = sgd</span><br><span class="line">  loss = categorical_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>network1: test set ~0.5124</p>
+<p>network2: test set ~0.6745</p>
+<h2 id="20-Newsgroup"><a href="#20-Newsgroup" class="headerlink" title="20 Newsgroup"></a>20 Newsgroup</h2><p>目标: Newsgroup 文章分类</p>
+<h3 id="pretrained-word-embeddings-py"><a href="#pretrained-word-embeddings-py" class="headerlink" title="pretrained_word_embeddings.py"></a>pretrained_word_embeddings.py</h3><ul>
+<li>方案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">导入 glove embedding(不可训练)</span><br><span class="line"></span><br><span class="line">Dense(128)</span><br><span class="line">Flatten</span><br><span class="line">MaxPooling1D(35)</span><br><span class="line">Conv1D(128, 5, activation=&apos;relu&apos;)</span><br><span class="line">MaxPooling1D(5)</span><br><span class="line">Conv1D(128, 5, activation=&apos;relu&apos;)</span><br><span class="line">MaxPooling1D(5)</span><br><span class="line">Conv1D(128, 5, activation=&apos;relu&apos;)</span><br><span class="line">Embedding</span><br></pre></td></tr></table></figure>
+<ul>
+<li>超参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sentence len   = 1000</span><br><span class="line">vocab size     = min(20000, dataset实际token数)</span><br><span class="line">embedding size = 100</span><br><span class="line">optimizer      = rmsprop</span><br><span class="line">loss = categorical_crossentropy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指标</li>
+</ul>
+<p>val_acc = ~0.7417</p>
+<h1 id="Visual-Recognition"><a href="#Visual-Recognition" class="headerlink" title="Visual Recognition"></a>Visual Recognition</h1><h2 id="MNIST-数字识别"><a href="#MNIST-数字识别" class="headerlink" title="MNIST 数字识别"></a>MNIST 数字识别</h2><p>TBD</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+    
+        <a href="/android/alert-window-权限控制/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Alert Window 弹窗控制</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            Wangmuy &copy; 2019 
+            <a rel="external nofollow noopener noreferrer" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a href="https://github.com/zthxxx/hexo-theme-Wikitten" rel="external nofollow noopener noreferrer" target="_blank">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
