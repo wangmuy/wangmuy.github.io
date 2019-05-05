@@ -4,6 +4,7 @@ title: "keras examples 总结"
 date: 2017-09-07 15:55:18 +0800
 categories: [mldl]
 description: 
+toc: true
 ---
 
 # NLP
