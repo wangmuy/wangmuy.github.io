@@ -12,11 +12,11 @@
     <meta name="description" content="NLPimdb 评论分类目标: 划分 imdb 评论电影好坏 imdb_bidirectional_lstm.py 方案  123Densebidirectional lstmEmbedding  超参数  1234567sentence len     = 100vocab size       = 20000embedding size   = 128lstm unroll      = 64">
 <meta property="og:type" content="article">
 <meta property="og:title" content="keras examples 总结">
-<meta property="og:url" content="http://yoursite.com/misc/keras-examples/index.html">
+<meta property="og:url" content="http://yoursite.com/mldl/keras-examples/index.html">
 <meta property="og:site_name" content="wangmuy 的技术博客">
 <meta property="og:description" content="NLPimdb 评论分类目标: 划分 imdb 评论电影好坏 imdb_bidirectional_lstm.py 方案  123Densebidirectional lstmEmbedding  超参数  1234567sentence len     = 100vocab size       = 20000embedding size   = 128lstm unroll      = 64">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-03T14:25:36.199Z">
+<meta property="og:updated_time" content="2019-05-05T14:27:00.894Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="keras examples 总结">
 <meta name="twitter:description" content="NLPimdb 评论分类目标: 划分 imdb 评论电影好坏 imdb_bidirectional_lstm.py 方案  123Densebidirectional lstmEmbedding  超参数  1234567sentence len     = 100vocab size       = 20000embedding size   = 128lstm unroll      = 64">
@@ -193,7 +193,7 @@
                             &nbsp;
                             mldl
                         </a>
-                         <ul class="unstyled" id="tree">  <li class="file"><a href="/mldl/torch-windows-build/">Torch windows 编译</a></li>  <li class="file"><a href="/mldl/tensorflow-core_rnn_cell-源码分析/">tensorflow rnn embedding</a></li>  <li class="file active"><a href="/misc/keras-examples/">keras examples 总结</a></li>  </ul> 
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/mldl/torch-windows-build/">Torch windows 编译</a></li>  <li class="file"><a href="/mldl/tensorflow-core_rnn_cell-源码分析/">tensorflow rnn embedding</a></li>  <li class="file active"><a href="/mldl/keras-examples/">keras examples 总结</a></li>  </ul> 
                     </li> 
                     
                     <li class="directory">
@@ -284,7 +284,7 @@
     <div id="toTop" class="fa fa-angle-up"></div>
 </aside>
             
-            <section id="main"><article id="post-misc/keras-examples" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-mldl/keras-examples" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -301,7 +301,7 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/misc/keras-examples/">
+        <a href="/mldl/keras-examples/">
             <time datetime="2017-09-07T07:55:18.000Z" itemprop="datePublished">2017-09-07</time>
         </a>
     </div>
@@ -313,13 +313,13 @@
                         
                         
                             <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/misc/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/raw/hexo/source/_posts/mldl/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> Source </a>
                             </div>
                             <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/misc/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/edit/hexo/source/_posts/mldl/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> Edit </a>
                             </div>
                             <div class="article-meta-button">
-                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/misc/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
+                                <a href="https://github.com/wangmuy/wangmuy.github.io/commits/hexo/source/_posts/mldl/keras-examples.md" rel="external nofollow noopener noreferrer" target="_blank"> History </a>
                             </div>
                         
                     </div>
@@ -337,6 +337,11 @@
         <div class="article-entry" itemprop="articleBody">
         
         
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#NLP"><span class="toc-number">1.</span> <span class="toc-text">NLP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#imdb-评论分类"><span class="toc-number">1.1.</span> <span class="toc-text">imdb 评论分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#imdb-bidirectional-lstm-py"><span class="toc-number">1.1.1.</span> <span class="toc-text">imdb_bidirectional_lstm.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#imdb-cnn-py"><span class="toc-number">1.1.2.</span> <span class="toc-text">imdb_cnn.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#imdb-cnn-lstm-py"><span class="toc-number">1.1.3.</span> <span class="toc-text">imdb_cnn_lstm.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#imdb-fasttext-py"><span class="toc-number">1.1.4.</span> <span class="toc-text">imdb_fasttext.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#imdb-lstm-py"><span class="toc-number">1.1.5.</span> <span class="toc-text">imdb_lstm.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lstm-benchmark-py"><span class="toc-number">1.1.6.</span> <span class="toc-text">lstm_benchmark.py</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reuters-新闻分类"><span class="toc-number">1.2.</span> <span class="toc-text">reuters 新闻分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#reuters-mlp-py"><span class="toc-number">1.2.1.</span> <span class="toc-text">reuters_mlp.py</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reuters-mlp-relu-vs-selu-py"><span class="toc-number">1.2.2.</span> <span class="toc-text">reuters_mlp_relu_vs_selu.py</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#20-Newsgroup"><span class="toc-number">1.3.</span> <span class="toc-text">20 Newsgroup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pretrained-word-embeddings-py"><span class="toc-number">1.3.1.</span> <span class="toc-text">pretrained_word_embeddings.py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Visual-Recognition"><span class="toc-number">2.</span> <span class="toc-text">Visual Recognition</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MNIST-数字识别"><span class="toc-number">2.1.</span> <span class="toc-text">MNIST 数字识别</span></a></li></ol></li></ol>
+                </div>
             
         
         
